@@ -1573,6 +1573,9 @@
         <p>홍익대 미술우수자(면접 60%) · 세종대 세종창의인재(구상지 발표 30%) · 한양대(ERICA) IC-PBL 4대 역량 기준 실시간 심층 구술 설계</p>
       </div>
       <div class="header-actions">
+        <button type="button" id="downloadAppHtmlBtn" class="header-action-btn" style="background: #ffffff; color: #1e3a8a; font-weight: 800; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+          📥 브라우저 바로실행 HTML 파일 다운로드
+        </button>
         <button type="button" id="toggleApiDrawerBtn" class="header-action-btn">
           ⚙️ Gemini API 설정 (선택)
         </button>
@@ -1822,6 +1825,9 @@
             </h2>
           </div>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="downloadAppHtmlResultBtn" class="btn-blue" style="font-weight: 800;">
+              📥 브라우저 바로실행 파일 다운로드
+            </button>
             <button type="button" id="downloadTxtBtn" class="btn-blue-secondary">
               💾 면접 스크립트(.txt) 저장
             </button>
@@ -2579,6 +2585,15 @@
 
       document.getElementById("downloadTxtBtn").addEventListener("click", downloadResultAsText);
 
+      const dlAppBtn = document.getElementById("downloadAppHtmlBtn");
+      if (dlAppBtn) {
+        dlAppBtn.addEventListener("click", downloadCompleteAppFile);
+      }
+      const dlAppResBtn = document.getElementById("downloadAppHtmlResultBtn");
+      if (dlAppResBtn) {
+        dlAppResBtn.addEventListener("click", downloadCompleteAppFile);
+      }
+
       const apiToggleBtn = document.getElementById("toggleApiDrawerBtn");
       const apiDrawer = document.getElementById("apiDrawer");
       apiToggleBtn.addEventListener("click", () => {
@@ -2630,6 +2645,67 @@
           ? "👁️ 대본 다시 보기"
           : "🙈 대본 가리고 키워드만 보고 연습하기";
       });
+    }
+
+    // 단독 실행 가능한 HTML 파일 자체 다운로드 (웹서버 없이 더블클릭으로 즉시 실행)
+    function downloadCompleteAppFile() {
+      const fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "디자인계열_학종_비실기_면접AI코치_바로실행.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("📥 브라우저 바로실행 HTML 파일이 다운로드되었습니다! 더블클릭하여 바로 사용하세요.");
+    }
+
+    // 면접 스크립트 TXT 파일 다운로드
+    function downloadResultAsText() {
+      const qListEl = document.getElementById("qaCardList");
+      const evalBox = document.getElementById("evalOverviewBox");
+      const rehearsalBox = document.getElementById("rehearsalCardList");
+
+      let textContent = `====================================================\n`;
+      textContent += `[디자인계열 학종·비실기 면접 AI 코치 - 질문 & STAR-L 답변 리포트]\n`;
+      textContent += `지원 대학: ${selectedUni ? selectedUni.name : "디자인계열 대학"}\n`;
+      textContent += `생성 일시: ${new Date().toLocaleString("ko-KR")}\n`;
+      textContent += `====================================================\n\n`;
+
+      if (evalBox && evalBox.innerText.trim()) {
+        textContent += `[1. 사정관 평가 지표 & Red Flag 요약]\n`;
+        textContent += evalBox.innerText.trim() + `\n\n`;
+      }
+
+      if (qListEl && qListEl.innerText.trim()) {
+        textContent += `[2. 예상 면접 질문 & STAR-L 고득점 답변]\n`;
+        textContent += qListEl.innerText.trim() + `\n\n`;
+      }
+
+      if (rehearsalBox && rehearsalBox.innerText.trim()) {
+        textContent += `[3. 실전 리허설 점검 체크리스트]\n`;
+        textContent += rehearsalBox.innerText.trim() + `\n\n`;
+      }
+
+      const promptBox = document.getElementById("generatedPromptOutput");
+      if (promptBox && promptBox.value.trim()) {
+        textContent += `[4. AI 면접관 심층 프롬프트]\n`;
+        textContent += promptBox.value.trim() + `\n`;
+      }
+
+      const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const uniPrefix = selectedUni ? selectedUni.name.replace(/\s+/g, "_") : "디자인계열";
+      a.download = `면접예상질문_STAR-L답변_${uniPrefix}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("💾 면접 스크립트(.txt) 파일이 다운로드되었습니다!");
     }
 
     function updateChecklistScore() {

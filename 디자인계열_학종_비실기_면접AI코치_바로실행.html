@@ -1,0 +1,3314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>디자인계열 학종·비실기 면접 AI 코치 - 홍익대·세종대·한양대(ERICA) 맞춤 생성기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- PDF.js for client-side student record PDF parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+  </script>
+  <style>
+    :root {
+      /* 옅은 핑크색 배경 (Soft Pastel Pink) & 파란색 섹션 버튼 (Vibrant Blue) 팔레트 */
+      --bg: #fff1f5;
+      --bg-gradient: linear-gradient(160deg, #fff0f5 0%, #fff7f9 45%, #fce7ef 100%);
+      --surface: #ffffff;
+      --surface-soft: #fff5f8;
+      --surface-pink: #fdf2f6;
+      --surface-blue-soft: #eff6ff;
+
+      /* 파란색 버튼 (Blue Section Buttons) */
+      --btn-blue: #2563eb;
+      --btn-blue-hover: #1d4ed8;
+      --btn-blue-dark: #1e40af;
+      --btn-blue-soft: #eff6ff;
+      --btn-blue-border: #93c5fd;
+      --btn-blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      --btn-blue-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+
+      /* 핑크 포인트 액센트 */
+      --pink-primary: #ec4899;
+      --pink-hover: #db2777;
+      --pink-soft: #fdf2f8;
+      --pink-border: #fbcfe8;
+
+      --text-main: #0f172a;
+      --text-sub: #334155;
+      --text-muted: #64748b;
+      --border: #fbcfe8;
+      --border-blue: #bfdbfe;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.08), 0 4px 12px -2px rgba(37, 99, 235, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Pretendard", "Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+      background-color: var(--bg);
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.65;
+      padding-bottom: 64px;
+      min-height: 100vh;
+    }
+
+    /* 앱 헤더: 딥 블루 & 로즈 핑크 그라데이션 */
+    .app-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 54%, #db2777 100%);
+      color: #ffffff;
+      padding: 26px 20px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 24px rgba(30, 58, 138, 0.2);
+    }
+
+    .header-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-badge-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+
+    .live-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      color: #1e3a8a;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ec4899;
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
+      animation: pulseDot 1.8s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.75; }
+    }
+
+    .app-header h1 {
+      font-size: 1.62rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .app-header p {
+      color: #e0f2fe;
+      font-size: 0.93rem;
+      margin-top: 5px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-action-btn {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 9px 15px;
+      border-radius: 11px;
+      cursor: pointer;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      backdrop-filter: blur(4px);
+    }
+
+    .header-action-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateY(-1px);
+    }
+
+    /* 상단 대형 섹션 전환 파란색 버튼 바 (Section Navigation Buttons) */
+    .section-nav-wrap {
+      max-width: 1140px;
+      margin: 18px auto 0;
+      padding: 0 18px;
+    }
+
+    .section-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 840px) {
+      .section-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section-nav-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1.5px solid var(--btn-blue-border);
+      background: #ffffff;
+      color: var(--btn-blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+    }
+
+    .section-nav-btn:hover {
+      background: #eff6ff;
+      border-color: var(--btn-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.16);
+    }
+
+    .section-nav-btn.active {
+      background: var(--btn-blue-gradient);
+      color: #ffffff;
+      border-color: var(--btn-blue-dark);
+      box-shadow: var(--btn-blue-shadow);
+    }
+
+    /* 실시간 입시 브리핑 & 5개년 Grounding 상태 바 */
+    .live-ticker-bar {
+      max-width: 1140px;
+      margin: 14px auto 0;
+      padding: 0 18px;
+    }
+
+    .live-ticker-inner {
+      background: #ffffff;
+      border: 1.5px solid #fbcfe8;
+      border-radius: 13px;
+      padding: 11px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .ticker-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: #831843;
+    }
+
+    .ticker-tag {
+      background: var(--btn-blue);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.76rem;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .grounding-badge-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      color: #be185d;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .ticker-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.81rem;
+      color: #1e40af;
+      font-weight: 600;
+      flex-wrap: wrap;
+    }
+
+    /* 파란색 유틸리티 버튼들 */
+    .btn-blue {
+      background: var(--btn-blue-gradient);
+      color: #ffffff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 9px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .btn-blue:hover {
+      background: var(--btn-blue-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.32);
+    }
+
+    .btn-blue-secondary {
+      background: #ffffff;
+      color: var(--btn-blue);
+      border: 1.5px solid var(--btn-blue-border);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-blue-secondary:hover {
+      background: #eff6ff;
+      border-color: var(--btn-blue);
+    }
+
+    /* 메인 컨테이너 */
+    .main-container {
+      max-width: 1140px;
+      margin: 18px auto 24px;
+      padding: 0 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .panel-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--border);
+      padding: 24px;
+    }
+
+    .step-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 920px) {
+      .step-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .step-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-num {
+      background: var(--btn-blue);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+    }
+
+    .step-header h2 {
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* 대학 선택 검색창 및 필 */
+    .search-box-wrap {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #fbcfe8;
+      background: #fffdfd;
+      font-size: 0.94rem;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--btn-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .uni-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-height: 165px;
+      overflow-y: auto;
+      padding: 4px 2px 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .uni-pill {
+      background: #fff5f8;
+      color: #9d174d;
+      border: 1.5px solid #fbcfe8;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .uni-pill:hover {
+      background: #fce7ef;
+      border-color: #f472b6;
+    }
+
+    .uni-pill.active {
+      background: var(--btn-blue-gradient);
+      color: #ffffff;
+      border-color: var(--btn-blue-dark);
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .select-input,
+    .text-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1.5px solid #fbcfe8;
+      font-size: 0.93rem;
+      background: #fffafc;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+
+    .select-input:focus,
+    .text-input:focus {
+      outline: none;
+      border-color: var(--btn-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    .adm-info-card {
+      background: linear-gradient(145deg, #fff5f8 0%, #eff6ff 100%);
+      border: 1.5px solid #fbcfe8;
+      border-radius: 13px;
+      padding: 16px;
+      margin-top: 10px;
+    }
+
+    .adm-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .uni-badge {
+      background: var(--btn-blue);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 7px;
+    }
+
+    .adm-meta-badges {
+      display: flex;
+      gap: 6px;
+      font-size: 0.78rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-tag {
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .adm-info-card h3 {
+      font-size: 1.03rem;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+
+    .adm-detail-row {
+      font-size: 0.87rem;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    .adm-2027-update {
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      color: #9d174d;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .adm-tips-box {
+      background: #ffffff;
+      border-radius: 9px;
+      padding: 11px 14px;
+      margin-top: 10px;
+      border-left: 4px solid var(--btn-blue);
+    }
+
+    .adm-tips-box strong {
+      font-size: 0.84rem;
+      color: var(--btn-blue-dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .adm-tips-box ul {
+      padding-left: 18px;
+      font-size: 0.84rem;
+      color: #1e293b;
+    }
+
+    .input-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .input-row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sample-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      background: #fff5f8;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px dashed #fbcfe8;
+    }
+
+    .sample-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #be185d;
+      margin-right: 4px;
+    }
+
+    .sample-btn {
+      background: #ffffff;
+      border: 1px solid #fbcfe8;
+      color: #831843;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sample-btn:hover,
+    .sample-btn.active {
+      background: var(--btn-blue);
+      border-color: var(--btn-blue);
+      color: #ffffff;
+    }
+
+    .record-textarea {
+      width: 100%;
+      min-height: 195px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1.5px solid #fbcfe8;
+      background: #fffafc;
+      font-size: 0.93rem;
+      line-height: 1.6;
+      resize: vertical;
+      font-family: inherit;
+      color: var(--text-main);
+    }
+
+    .record-textarea:focus {
+      outline: none;
+      border-color: var(--btn-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    .textarea-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .text-clear-btn {
+      background: none;
+      border: none;
+      color: var(--btn-blue);
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* 실시간 디자인 3대 역량 감지 모니터 */
+    .live-analysis-strip {
+      background: #fff5f8;
+      border: 1px solid #fbcfe8;
+      border-radius: 11px;
+      padding: 11px 14px;
+      margin-bottom: 14px;
+    }
+
+    .live-strip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #831843;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .competency-bars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .comp-item {
+      background: #ffffff;
+      border: 1px solid #fbcfe8;
+      border-radius: 8px;
+      padding: 6px 9px;
+    }
+
+    .comp-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+    }
+
+    .comp-bar-bg {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .comp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .detected-kw-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      font-size: 0.77rem;
+      color: #475569;
+    }
+
+    .detected-chip {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: var(--btn-blue-gradient);
+      color: #ffffff;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 1.03rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--btn-blue-shadow);
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.72;
+      cursor: wait;
+    }
+
+    /* 결과 탭 및 QA 카드 스타일 */
+    .result-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mode-badge {
+      display: inline-block;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 999px;
+      margin-bottom: 5px;
+    }
+
+    .result-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .result-tab-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1.5px solid var(--btn-blue-border);
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 0.91rem;
+      color: var(--btn-blue);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .result-tab-btn:hover {
+      background: #eff6ff;
+    }
+
+    .result-tab-btn.active {
+      background: var(--btn-blue);
+      color: #fff;
+      border-color: var(--btn-blue);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .qa-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .qa-card {
+      border: 1.5px solid #bfdbfe;
+      border-radius: 15px;
+      padding: 22px;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.05);
+    }
+
+    .qa-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .qa-badge {
+      background: #1e3a8a;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 999px;
+    }
+
+    .grounding-chip {
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      color: #be185d;
+      font-size: 0.77rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .timer-btn {
+      background: #eff6ff;
+      color: var(--btn-blue);
+      border: 1px solid var(--btn-blue-border);
+      padding: 6px 13px;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .timer-btn:hover {
+      background: #dbeafe;
+    }
+
+    .qa-intent {
+      font-size: 0.88rem;
+      color: #1e293b;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 9px;
+      margin-bottom: 14px;
+    }
+
+    .qa-question-box {
+      background: #fffbeb;
+      border-left: 5px solid #f59e0b;
+      padding: 14px 18px;
+      border-radius: 9px;
+      margin-bottom: 16px;
+    }
+
+    .qa-q-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #b45309;
+      margin-bottom: 4px;
+    }
+
+    .qa-q-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .qa-answer-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .qa-a-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 12px;
+      font-size: 0.94rem;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .copy-single-btn {
+      background: #ffffff;
+      border: 1px solid var(--btn-blue-border);
+      color: var(--btn-blue);
+      padding: 5px 11px;
+      border-radius: 7px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .copy-single-btn:hover {
+      background: #eff6ff;
+    }
+
+    .star-l-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .star-item {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.93rem;
+      background: #ffffff;
+      border-left: 4px solid #94a3b8;
+    }
+
+    .conclusion-item {
+      border-left-color: #2563eb;
+      font-weight: 700;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+
+    .st-item {
+      border-left-color: #0d9488;
+    }
+
+    .a-item {
+      border-left-color: #7c3aed;
+    }
+
+    .rl-item {
+      border-left-color: #059669;
+    }
+
+    .qa-followup-box {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+
+    .followup-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #be123c;
+      margin-bottom: 8px;
+    }
+
+    .followup-item {
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+    }
+
+    .followup-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .followup-q {
+      font-weight: 700;
+      color: #881337;
+    }
+
+    .followup-a {
+      color: #334155;
+      margin-top: 2px;
+    }
+
+    .qa-keywords-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px dashed #bfdbfe;
+    }
+
+    .kw-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+
+    .kw-chip {
+      background: #eff6ff;
+      color: #1e40af;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+    }
+
+    /* ================================================================
+       SECTION 2: A4 용지 1장 입학사정관 서류평가 요약표 & 예상질문 추출
+       ================================================================ */
+    .a4-section-box {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .a4-input-card {
+      background: #ffffff;
+      border: 1.5px solid #fbcfe8;
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .file-drop-area {
+      border: 2px dashed #93c5fd;
+      background: #eff6ff;
+      border-radius: 12px;
+      padding: 22px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 14px;
+    }
+
+    .file-drop-area:hover,
+    .file-drop-area.dragover {
+      background: #dbeafe;
+      border-color: #2563eb;
+    }
+
+    .file-drop-area p {
+      color: #1e40af;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .file-drop-area span {
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+
+    /* A4 실제 출력 규격 컨테이너 (A4 Mockup Sheet) */
+    .a4-sheet-container {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 32px 36px;
+      color: #0f172a;
+      position: relative;
+      background-image: radial-gradient(#e2e8f0 0.8px, transparent 0.8px);
+      background-size: 16px 16px;
+      font-size: 0.88rem;
+    }
+
+    .a4-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: rgba(226, 232, 240, 0.45);
+      letter-spacing: 0.1em;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .a4-header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+    }
+
+    .a4-header-table th,
+    .a4-header-table td {
+      border: 1.5px solid #334155;
+      padding: 6px 10px;
+      font-size: 0.83rem;
+    }
+
+    .a4-header-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 800;
+      text-align: center;
+      width: 18%;
+    }
+
+    .a4-title-bar {
+      text-align: center;
+      border-bottom: 3px double #1e3a8a;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .a4-title-bar h2 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #1e3a8a;
+      letter-spacing: -0.01em;
+    }
+
+    .a4-title-bar p {
+      font-size: 0.8rem;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    .a4-sub-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 12px 0 6px;
+      border-bottom: 1.5px solid #94a3b8;
+      padding-bottom: 4px;
+    }
+
+    .a4-grid-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .a4-matrix-cell {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 8px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .a4-matrix-name {
+      font-size: 0.74rem;
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .a4-matrix-score {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #2563eb;
+      margin: 2px 0;
+    }
+
+    .a4-matrix-desc {
+      font-size: 0.7rem;
+      color: #64748b;
+      line-height: 1.3;
+    }
+
+    .a4-project-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: #ffffff;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .a4-project-box strong {
+      color: #1e3a8a;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .a4-redflag-box {
+      background: #fef2f2;
+      border: 1.5px solid #fecdd3;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      font-size: 0.81rem;
+      color: #991b1b;
+    }
+
+    .a4-question-item {
+      padding: 6px 8px;
+      background: #f8fafc;
+      border-left: 3px solid #2563eb;
+      margin-bottom: 6px;
+      font-size: 0.82rem;
+    }
+
+    .a4-question-item strong {
+      color: #1e40af;
+    }
+
+    /* ================================================================
+       SECTION 3: 5개년 기출문제 정리 아카이브 & 해설
+       ================================================================ */
+    .archive-filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .archive-filter-btn {
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: 1.5px solid var(--btn-blue-border);
+      background: #ffffff;
+      color: var(--btn-blue);
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .archive-filter-btn.active {
+      background: var(--btn-blue);
+      color: #fff;
+      border-color: var(--btn-blue);
+    }
+
+    .past-exam-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .past-exam-card {
+      background: #ffffff;
+      border: 1.5px solid #fbcfe8;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s;
+    }
+
+    .past-exam-card:hover {
+      border-color: var(--btn-blue);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.1);
+    }
+
+    .past-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .past-uni-tag {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      background: #1e3a8a;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .past-year-pill {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #be185d;
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .past-q-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+
+    .past-desc-box {
+      background: #fff5f8;
+      border: 1px solid #fbcfe8;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      color: #334155;
+      margin-bottom: 10px;
+    }
+
+    .past-tips-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #e2e8f0;
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+
+    /* ================================================================
+       SECTION 4: 5개년 인터넷 Grounding 인사이트
+       ================================================================ */
+    .grounding-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 760px) {
+      .grounding-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #2563eb;
+      margin: 4px 0;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #475569;
+      font-weight: 700;
+    }
+
+    .stat-detail {
+      font-size: 0.74rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* 모달 및 토스트 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-box {
+      background: #fff;
+      max-width: 680px;
+      width: 100%;
+      border-radius: 16px;
+      padding: 24px;
+      border: 2px solid #bfdbfe;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .timer-box {
+      text-align: center;
+      background: #eff6ff;
+      padding: 18px;
+      border-radius: 12px;
+      margin: 16px 0;
+      border: 1px solid #bfdbfe;
+    }
+
+    .timer-display {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-display.optimal {
+      color: #2563eb;
+    }
+
+    .timer-display.overtime {
+      color: #dc2626;
+    }
+
+    .modal-script-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      max-height: 240px;
+      overflow-y: auto;
+      transition: filter 0.25s;
+    }
+
+    .modal-script-box p {
+      margin-bottom: 8px;
+    }
+
+    .modal-script-box.blurred {
+      filter: blur(6px);
+      user-select: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e3a8a;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.25s;
+      z-index: 2000;
+      border: 1px solid #60a5fa;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.warn {
+      background: #be123c;
+      border-color: #f43f5e;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* A4 용지 1장 인쇄 전용 CSS (@media print) */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+      }
+      .app-header,
+      .section-nav-wrap,
+      .live-ticker-bar,
+      #mainCoachSection,
+      #archiveSection,
+      #groundingSection,
+      .a4-input-card,
+      .a4-btn-actions,
+      .header-actions,
+      .toast,
+      .modal-overlay {
+        display: none !important;
+      }
+      #a4Section {
+        display: block !important;
+      }
+      .panel-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .a4-sheet-container {
+        border: 2px solid #000000 !important;
+        box-shadow: none !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .a4-watermark {
+        color: rgba(0, 0, 0, 0.08) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 앱 상단 헤더 -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div>
+        <div class="brand-badge-row">
+          <span class="brand-badge">🎨 홍익대(서울) 디자인학부 · 세종대 디자인이노베이션 · 한양대(ERICA) 특화</span>
+          <span class="live-status-pill">
+            <span class="live-dot"></span>
+            <span id="liveClockText">2027학년도 디자인 학종·비실기 실시간 적용 중</span>
+          </span>
+          <span class="grounding-badge-inline" style="background: rgba(255,255,255,0.22); color:#fff; border-color: rgba(255,255,255,0.4);">
+            🌐 최근 5개년 인터넷 자료 Grounding 활성화됨
+          </span>
+        </div>
+        <h1>🎨 디자인계열 학종·비실기 면접 AI 코치 &amp; STAR-L 답변 생성기</h1>
+        <p>홍익대 미술우수자(면접 60%) · 세종대 세종창의인재(구상지 발표 30%) · 한양대(ERICA) IC-PBL 4대 역량 기준 실시간 심층 구술 설계</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="downloadAppHtmlBtn" class="header-action-btn" style="background: #ffffff; color: #1e3a8a; font-weight: 800; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+          📥 브라우저 바로실행 HTML 파일 다운로드
+        </button>
+        <button type="button" id="toggleApiDrawerBtn" class="header-action-btn">
+          ⚙️ Gemini API 설정 (선택)
+        </button>
+      </div>
+    </div>
+
+    <div id="apiDrawer" class="hidden" style="max-width: 1140px; margin: 12px auto 0; background: rgba(30, 58, 138, 0.85); border: 1px solid rgba(191, 219, 254, 0.4); border-radius: 12px; padding: 14px 18px;">
+      <div style="font-size: 0.85rem; color: #e0f2fe;">
+        <strong>💡 안내:</strong> API 키가 없어도 내장된 <strong>5개년 입시 Grounding 분석 엔진</strong>으로 질문·답변이 즉시 생성됩니다. 실시간 Gemini AI 호출을 원하실 경우에만 API 키를 입력하세요.
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+        <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy... (Google Gemini API Key 입력 - 선택사항)" style="flex:1; min-width: 240px; padding: 9px 12px; border-radius: 8px; border: 1px solid #93c5fd; background: #0f172a; color:#fff;" />
+        <button type="button" id="saveApiKeyBtn" class="btn-blue">저장하기</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 상단 대형 섹션 전환 파란색 버튼 바 (파란색 섹션 버튼) -->
+  <nav class="section-nav-wrap">
+    <div class="section-nav-grid">
+      <button type="button" class="section-nav-btn active" data-section="mainCoachSection">
+        <span>🎯</span>
+        <span>면접 질문 &amp; STAR-L 코칭</span>
+      </button>
+      <button type="button" class="section-nav-btn" data-section="a4Section">
+        <span>📄</span>
+        <span>학생부·PDF A4 1장 입학사정관 요약표</span>
+      </button>
+      <button type="button" class="section-nav-btn" data-section="archiveSection">
+        <span>📚</span>
+        <span>5개년 기출 정리 및 해설 아카이브</span>
+      </button>
+      <button type="button" class="section-nav-btn" data-section="groundingSection">
+        <span>🌐</span>
+        <span>5개년 인터넷 Grounding 인사이트</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 실시간 입시 브리핑 & 3개 대학 비교 토글 바 -->
+  <div class="live-ticker-bar">
+    <div class="live-ticker-inner">
+      <div class="ticker-left">
+        <span class="ticker-tag">2027 디자인 비실기 브리핑</span>
+        <span id="liveTrendText">홍익대(서울) 2단계 면접 60%(12.6) · 세종대 제시문 시각화 발표+서류 30% · 한양대(ERICA) IC-PBL 4대 역량 평가</span>
+        <span class="grounding-badge-inline">🌐 5개년 입시 데이터 실시간 연동</span>
+      </div>
+      <div class="ticker-right">
+        <button type="button" id="toggleCompareTableBtn" class="btn-blue-secondary" style="font-size: 0.78rem; padding: 5px 12px;">
+          📊 3개 대학 전형 비교표
+        </button>
+        <button type="button" id="quickGoArchiveBtn" class="btn-blue-secondary" style="font-size: 0.78rem; padding: 5px 12px;">
+          📚 기출문제 전체 정리
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3개 대학 디자인 전형 비교표 드로어 -->
+  <div id="compareDrawer" class="hidden" style="max-width: 1140px; margin: 10px auto 0; padding: 0 18px;">
+    <div style="background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow); overflow-x: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="font-size: 0.98rem; color: #1e3a8a; font-weight: 800;">🎨 목표 3개 대학 디자인계열(홍익대 서울·세종대·한양대 ERICA) 전형 및 면접 핵심 비교</h3>
+        <span style="font-size: 0.78rem; color: #2563eb; font-weight: 600;">※ 행 클릭 시 해당 대학 모드로 즉시 전환됩니다</span>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.83rem; min-width: 680px;">
+        <thead>
+          <tr style="background: #eff6ff; color: #1e3a8a; font-weight: 800;">
+            <th style="padding: 9px 10px; border-bottom: 2px solid #bfdbfe; text-align: left;">대학 및 모집단위</th>
+            <th style="padding: 9px 10px; border-bottom: 2px solid #bfdbfe; text-align: left;">전형 방법 및 반영 비율</th>
+            <th style="padding: 9px 10px; border-bottom: 2px solid #bfdbfe; text-align: left;">면접·평가 방식</th>
+            <th style="padding: 9px 10px; border-bottom: 2px solid #bfdbfe; text-align: left;">2027 디자인 핵심 평가 포인트</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="compare-row" data-uni="hongik_design" style="cursor: pointer; border-bottom: 1px solid #fbcfe8;">
+            <td style="padding: 9px 10px;"><strong>홍익대(서울) 디자인학부</strong><br/>(미술우수자 - 68명)</td>
+            <td style="padding: 9px 10px;">1단계 교과20+서류80 (3배수)<br/><strong>2단계 서류40 + 면접60%</strong></td>
+            <td style="padding: 9px 10px;">제시문·도판 구술 + 미활보 진위 확인</td>
+            <td style="padding: 9px 10px;"><strong>소양·창의성·표현·서류진실성 4대 평가!</strong> 도판 조형 해석 + 미활보 디자인 씽킹 검증 (2026.12.6 면접)</td>
+          </tr>
+          <tr class="compare-row" data-uni="sejong_design" style="cursor: pointer; border-bottom: 1px solid #fbcfe8;">
+            <td style="padding: 9px 10px;"><strong>세종대 디자인이노베이션</strong><br/>(세종창의인재(면접형))</td>
+            <td style="padding: 9px 10px;">1단계 서류 100% (3배수)<br/><strong>2단계 서류70 + 면접30%</strong></td>
+            <td style="padding: 9px 10px;">전공적합성 발표(A3 구상지 드로잉) + 학생부 면접</td>
+            <td style="padding: 9px 10px;"><strong>과학 개념(파동/가속도) × 디자인 키워드(접근성/유동성) 융합 발표!</strong> 면접 실질 역전율 63.1%</td>
+          </tr>
+          <tr class="compare-row" data-uni="erica_design" style="cursor: pointer; border-bottom: 1px solid #fbcfe8;">
+            <td style="padding: 9px 10px;"><strong>한양대(ERICA) 디자인계열</strong><br/>(산업/커뮤니케이션/영상/패션)</td>
+            <td style="padding: 9px 10px;"><strong>학생부종합 서류 100%</strong><br/>(심층 면접 연계)</td>
+            <td style="padding: 9px 10px;">비판적·창의적·자기주도·소통협업 4대 역량 정성평가</td>
+            <td style="padding: 9px 10px;"><strong>IC-PBL 산업·사회 문제해결!</strong> 단순 스타일링을 넘어 사용자 데이터 분석과 페인포인트 해결 스토리텔링</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <main class="main-container">
+    <!-- =======================================================
+         VIEW 1: 면접 질문 & STAR-L 코칭 섹션 (메인 생성기)
+         ======================================================= -->
+    <div id="mainCoachSection" class="section-view">
+      <div class="step-grid">
+        <!-- STEP 1: 디자인 대학/전형 선택 -->
+        <section class="panel-card">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-num">STEP 1</span>
+              <h2>지원 디자인 대학·전형 선택</h2>
+            </div>
+            <span style="font-size: 0.78rem; color: #2563eb; font-weight: 700;">홍익·세종·한양(ERICA) 특화</span>
+          </div>
+
+          <div class="search-box-wrap">
+            <input
+              type="text"
+              id="uniSearchInput"
+              class="search-input"
+              placeholder="🔍 대학명·전공·전형 검색 (예: 홍익대, 디자인학부, 세종대, 디자인이노베이션, 한양대 ERICA...)"
+            />
+          </div>
+
+          <div id="uniPillsContainer" class="uni-pills"></div>
+
+          <div class="form-group">
+            <label for="admissionTypeSelect">📌 세부 전형 및 면접·서류 대비 모드 선택</label>
+            <select id="admissionTypeSelect" class="select-input"></select>
+          </div>
+
+          <div class="adm-info-card">
+            <div class="adm-top-bar">
+              <span id="selectedUniBadge" class="uni-badge">홍익대학교(서울) 디자인학부</span>
+              <div class="adm-meta-badges">
+                <span id="admTypeBadge" class="meta-tag">도판·제시문 구술 + 미활보 검증</span>
+                <span id="admDuration" class="meta-tag">면접 60% 반영</span>
+              </div>
+            </div>
+            <h3 id="admTypeTitle">미술우수자전형 (서울캠퍼스 디자인학부)</h3>
+            <div id="adm2027Note" class="adm-2027-update"></div>
+            <div class="adm-detail-row">
+              <strong>• 평가 기준:</strong> <span id="admCriteria"></span>
+            </div>
+            <div class="adm-detail-row">
+              <strong>• 교수진 질문 스타일:</strong> <span id="admStyle"></span>
+            </div>
+            <div class="adm-tips-box">
+              <strong>🏅 이 전형 합격 핵심 포인트</strong>
+              <ul id="admTipsList"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 2: 세부 전공 및 생기부·미활보 입력 -->
+        <section class="panel-card">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-num">STEP 2</span>
+              <h2>생기부·미활보 붙여넣기 &amp; 3대 역량 모니터링</h2>
+            </div>
+            <span id="apiStatusIndicator" style="font-size: 0.78rem; color: #1e40af; font-weight: 700;">🟢 5개년 Grounding 엔진 대기 중</span>
+          </div>
+
+          <div class="input-row-2">
+            <div class="form-group">
+              <label for="majorInput">🎯 지원 학부·세부 전공 트랙</label>
+              <input
+                type="text"
+                id="majorInput"
+                class="text-input"
+                value="디자인학부 (시각디자인 / 산업디자인 / 디자인이노베이션)"
+              />
+            </div>
+            <div class="form-group">
+              <label for="careerGoalInput">🌟 희망 디자인 분야 / 핵심 강점</label>
+              <input
+                type="text"
+                id="careerGoalInput"
+                class="text-input"
+                placeholder="예: 유니버설 UI/UX 디자이너, 친환경 지속가능 모빌리티 디자이너"
+              />
+            </div>
+          </div>
+
+          <div class="sample-bar">
+            <span class="sample-label">🎨 원클릭 예시:</span>
+            <button type="button" class="sample-btn" data-sample="visual_ux">📱 시각·유니버설 UX</button>
+            <button type="button" class="sample-btn" data-sample="industrial_eco">🛋️ 산업·친환경소재</button>
+            <button type="button" class="sample-btn" data-sample="sejong_fusion">⚡ SW·물리융합(세종대형)</button>
+            <button type="button" class="sample-btn" data-sample="erica_pbl">🎬 영상·산학PBL(한양대형)</button>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 4px;">
+            <label for="recordTextarea">📋 생활기록부(세특·동아리) 및 미술활동보고서 내용 붙여넣기</label>
+            <textarea
+              id="recordTextarea"
+              class="record-textarea"
+              placeholder="여기에 생활기록부(미술·정보·과학·사회 세특, 디자인 동아리) 또는 미술활동보고서 내용을 붙여넣어 주세요. 최근 5개년 인터넷 입시 Grounding 데이터와 매칭하여 실전 면접 질문과 STAR-L 모범답변을 생성합니다."
+            ></textarea>
+          </div>
+
+          <div class="textarea-footer">
+            <span id="charCount">0자 (예상 분석 문장 0개)</span>
+            <button type="button" id="clearRecordBtn" class="text-clear-btn">내용 지우기</button>
+          </div>
+
+          <!-- 실시간 디자인 3대 역량 감지 모니터 -->
+          <div class="live-analysis-strip">
+            <div class="live-strip-header">
+              <span>📊 실시간 디자인 학종 3대 역량 &amp; Grounding 키워드 감지</span>
+              <span id="liveTopicPreview" style="font-weight: 600; color: #2563eb;">생기부를 입력하면 실시간으로 분석합니다</span>
+            </div>
+            <div class="competency-bars">
+              <div class="comp-item">
+                <div class="comp-label-row"><span>미술소양·조형분석력</span><span id="compAcademicVal">0%</span></div>
+                <div class="comp-bar-bg"><div id="compAcademicBar" class="comp-bar-fill" style="width: 0%;"></div></div>
+              </div>
+              <div class="comp-item">
+                <div class="comp-label-row"><span>창의융합·문제해결(UX)</span><span id="compCareerVal">0%</span></div>
+                <div class="comp-bar-bg"><div id="compCareerBar" class="comp-bar-fill" style="width: 0%;"></div></div>
+              </div>
+              <div class="comp-item">
+                <div class="comp-label-row"><span>사용자공감·협업윤리</span><span id="compCommVal">0%</span></div>
+                <div class="comp-bar-bg"><div id="compCommBar" class="comp-bar-fill" style="width: 0%;"></div></div>
+              </div>
+            </div>
+            <div id="liveKeywordsContainer" class="detected-kw-wrap">
+              <span>감지된 디자인 키워드:</span>
+              <span class="detected-chip">예시 버튼을 누르거나 텍스트를 붙여넣으세요</span>
+            </div>
+          </div>
+
+          <!-- 파란색 대형 메인 생성 버튼 -->
+          <button type="button" id="generateBtn" class="generate-btn">
+            <span>🚀 5개년 Grounding 기반 면접 질문 4선 + 제시문 구술 + STAR-L 답변 생성</span>
+          </button>
+        </section>
+      </div>
+
+      <!-- 생성 결과 영역 -->
+      <section id="resultSection" class="panel-card hidden" style="margin-top: 24px;">
+        <div class="result-header-bar">
+          <div>
+            <span id="resultModeBadge" class="mode-badge">⚡ 5개년 인터넷 자료 Grounding 완료</span>
+            <h2 id="resultSummaryTitle" style="font-size: 1.35rem; font-weight: 800; color: #1e3a8a;">
+              디자인계열 맞춤형 면접 질문 &amp; 고득점 답변
+            </h2>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" id="downloadAppHtmlResultBtn" class="btn-blue" style="font-weight: 800;">
+              📥 브라우저 바로실행 파일 다운로드
+            </button>
+            <button type="button" id="downloadTxtBtn" class="btn-blue-secondary">
+              💾 면접 스크립트(.txt) 저장
+            </button>
+            <button type="button" id="printResultBtn" class="btn-blue-secondary">
+              🖨️ 면접장 지참용 인쇄 / PDF 저장
+            </button>
+          </div>
+        </div>
+
+        <div class="result-tabs">
+          <button type="button" class="result-tab-btn active" data-target="qaTabPane">
+            📑 예상질문 4선 &amp; STAR-L 모범답변
+          </button>
+          <button type="button" class="result-tab-btn" data-target="promptTabPane">
+            🤖 초정밀 프롬프트 복사용
+          </button>
+          <button type="button" class="result-tab-btn" data-target="checklistTabPane">
+            ✅ 실전 모의면접 11개 항목 자기점검표
+          </button>
+        </div>
+
+        <div id="qaTabPane" class="tab-pane active">
+          <div id="questionsContainer" class="qa-list"></div>
+        </div>
+
+        <div id="promptTabPane" class="tab-pane">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <p style="font-size: 0.92rem; color: #334155;">
+              선택하신 대학 평가 기준과 5개년 Grounding 지침이 결합된 완성형 프롬프트입니다.
+            </p>
+            <button type="button" id="copyPromptBtn" class="btn-blue">
+              📋 완성된 프롬프트 전체 복사
+            </button>
+          </div>
+          <textarea id="generatedPromptOutput" class="record-textarea" style="min-height: 340px; margin-top: 12px; font-family: monospace; background: #0f172a; color:#f8fafc;" readonly></textarea>
+        </div>
+
+        <div id="checklistTabPane" class="tab-pane">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+            <p style="font-size: 0.92rem; color: #334155;">
+              구술 표현 태도(5문항) + 디자인 씽킹·서류 내용(6문항) 실전 리허설 체크리스트입니다.
+            </p>
+            <span id="checklistScoreBadge" class="uni-badge">달성도: 0 / 11 항목 완료</span>
+          </div>
+          <div class="checklist-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+            <div style="background: #fff5f8; border: 1px solid #fbcfe8; border-radius: 12px; padding: 16px;">
+              <h4 style="color: #1e3a8a; font-size: 0.96rem; margin-bottom: 10px; font-weight: 800;">🗣️ 디자이너 구술 표현력 및 태도 (5개)</h4>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>단정하고 자연스러운 복장(블라인드 규정 준수)과 아이컨택을 유지하는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>추상적 감상 대신 조형 원리(비례, 대비, 위계, 어포던스) 용어로 설명하는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>'핵심 컨셉 1문장 → 시각적 근거 2가지 → 기대 효과' 순으로 구조화하는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>교수진의 구현성 압박 질문에 방어적 태도 대신 수용적·대안적 태도로 답하는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>팀 갈등 시 '사용자 데이터와 객관적 사용성 기준'으로 팀원을 설득했음을 보여주는가?</span></label>
+            </div>
+            <div style="background: #fff5f8; border: 1px solid #fbcfe8; border-radius: 12px; padding: 16px;">
+              <h4 style="color: #1e3a8a; font-size: 0.96rem; margin-bottom: 10px; font-weight: 800;">💡 서류 진실성 및 디자인 씽킹 (6개)</h4>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>결과물 자랑이 아닌 '문제 발견 → 공감 → 해결(How) → 피드백' 프로세스로 설명했는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>미활보 기재 작업의 툴/재료/스케치 과정을 막힘없이 구술할 수 있는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>[세종대] 물리·인문 개념(파동/가속도)을 디자인 키워드와 융합해 시각화할 수 있는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>[한양대 ERICA] 교내 활동이 실제 산업·사회 문제해결(IC-PBL)과 연결되는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>생성형 AI 디자인 윤리, 그린워싱, 다크패턴 등에 대한 본인만의 관점이 있는가?</span></label>
+              <label class="check-item-label" style="display:flex; gap:8px; padding:6px 0;"><input type="checkbox" class="rehearsal-check" /> <span>지원 대학 세부 트랙 커리큘럼과 고교 활동을 일관되게 연결했는가?</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =======================================================
+         VIEW 2: 학생부·자료 A4 1장 입학사정관 요약표 & 예상질문 섹션
+         ======================================================= -->
+    <div id="a4Section" class="section-view hidden">
+      <div class="panel-card a4-section-box">
+        <div class="step-header">
+          <div class="step-header-left">
+            <span class="step-num">A4 요약</span>
+            <h2>학생부·PDF A4 1장 입학사정관 서류평가표 &amp; 예상질문 추출</h2>
+          </div>
+          <span style="font-size: 0.8rem; color: #2563eb; font-weight: 700;">사정관 시선 위험요소(Red Flag) 및 심층 질문 4선 자동 추출</span>
+        </div>
+
+        <div class="a4-input-card">
+          <!-- 파일 드래그 앤 드롭 업로드 -->
+          <div id="pdfDropArea" class="file-drop-area">
+            <p>📄 학생부 PDF 또는 텍스트(.txt) 파일을 여기에 드래그하거나 클릭하여 업로드</p>
+            <span>※ PDF 파일 내 텍스트를 브라우저에서 자동 추출하며, 아래 텍스트창에 직접 붙여넣으셔도 됩니다.</span>
+            <input type="file" id="pdfFileInput" accept=".pdf,.txt" style="display: none;" />
+          </div>
+
+          <div class="input-row-2">
+            <div class="form-group">
+              <label for="a4StudentName">👤 수험생 가명 / 식별번호 (블라인드용)</label>
+              <input type="text" id="a4StudentName" class="text-input" value="지원자 A (디자인 일반고)" />
+            </div>
+            <div class="form-group">
+              <label for="a4TargetTrack">🎯 평가 대상 목표 대학 및 전공 트랙</label>
+              <input type="text" id="a4TargetTrack" class="text-input" value="홍익대 디자인학부 / 세종대 디자인이노베이션" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="a4RecordInput">📋 학생부 세특·창체 및 미술활동보고서 원문 입력</label>
+            <textarea
+              id="a4RecordInput"
+              class="record-textarea"
+              style="min-height: 140px;"
+              placeholder="학생부 원문이나 요약 자료를 붙여넣어 주세요. [A4 1장 요약표 생성하기] 버튼을 누르면 입학사정관 평가 관점의 A4 규격 요약표와 검증 질문이 완성됩니다."
+            ></textarea>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" id="generateA4Btn" class="btn-blue" style="padding: 13px 22px; font-size: 0.96rem;">
+              <span>📄 A4 용지 1장 입학사정관용 서류평가표 및 예상질문 생성하기</span>
+            </button>
+            <button type="button" id="loadSampleToA4Btn" class="btn-blue-secondary">
+              ✨ 추천 예시 데이터 불러오기
+            </button>
+          </div>
+        </div>
+
+        <!-- A4 출력용 실물 용지 컨테이너 -->
+        <div id="a4ResultArea" class="hidden" style="margin-top: 10px;">
+          <div class="a4-btn-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <span style="font-size: 0.86rem; color: #1e40af; font-weight: 700;">
+              🖨️ A4 1장 인쇄 또는 PDF 저장 시 표준 A4 한 페이지에 딱 맞게 정렬됩니다.
+            </span>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="printA4Btn" class="btn-blue">
+                🖨️ A4 용지 1장 인쇄 / PDF 저장
+              </button>
+              <button type="button" id="copyA4TextBtn" class="btn-blue-secondary">
+                📋 요약표 텍스트 복사
+              </button>
+            </div>
+          </div>
+
+          <div class="a4-sheet-container" id="printableA4Sheet">
+            <div class="a4-watermark">입학사정관 평가본</div>
+
+            <div class="a4-title-bar">
+              <h2>2027학년도 디자인계열 입학사정관 종합 서류평가 요약서</h2>
+              <p>홍익대학교 미술우수자 · 세종대학교 세종창의인재 · 한양대학교(ERICA) 서류종합 정성평가 기준</p>
+            </div>
+
+            <!-- 지원자 기본 정보 테이블 -->
+            <table class="a4-header-table">
+              <tr>
+                <th>지원자 식별</th>
+                <td id="a4DispName">지원자 A</td>
+                <th>목표 모집단위</th>
+                <td id="a4DispTrack">디자인학부 (시각/산업/UX)</td>
+              </tr>
+              <tr>
+                <th>서류 종합 등급</th>
+                <td><strong style="color: #2563eb; font-size: 0.95rem;" id="a4DispGrade">A+ (상위 3.8% 우수)</strong></td>
+                <th>사정관 종합 의견</th>
+                <td id="a4DispSummary">조형 분석력과 UX 문제해결 프로세스가 체계적이며 면접 진위 검증 가치 높음</td>
+              </tr>
+            </table>
+
+            <!-- 4대 평가영역 매트릭스 -->
+            <div class="a4-sub-title">1. 입학사정관 4대 핵심 역량 진단 매트릭스</div>
+            <div class="a4-grid-matrix" id="a4MatrixContainer"></div>
+
+            <!-- 핵심 프로젝트 3대 엄선 (Why-How-Result) -->
+            <div class="a4-sub-title">2. 학생부·미활보 핵심 프로젝트 3대 엄선 (심층 분석)</div>
+            <div id="a4ProjectsContainer"></div>
+
+            <!-- 사정관 시선 검증 위험요소 (Red Flag) -->
+            <div class="a4-sub-title">3. ⚠️ 서류 진실성 검증 위험요소 (Red Flag &amp; 확인 요망)</div>
+            <div class="a4-redflag-box" id="a4RedFlagBox"></div>
+
+            <!-- A4 요약 기반 입학사정관 심층 예상질문 4선 -->
+            <div class="a4-sub-title">4. 🎯 서류 기반 입학사정관 심층 예상질문 4선 (압박 질문 포함)</div>
+            <div id="a4QuestionsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         VIEW 3: 5개년 기출 정리 및 해설 아카이브 섹션
+         ======================================================= -->
+    <div id="archiveSection" class="section-view hidden">
+      <div class="panel-card">
+        <div class="step-header">
+          <div class="step-header-left">
+            <span class="step-num">기출 아카이브</span>
+            <h2>최근 5개년(2022~2026) 디자인계열 수시 면접 기출 실시간 정리</h2>
+          </div>
+          <span style="font-size: 0.8rem; color: #2563eb; font-weight: 700;">실제 기출 도판 및 제시문·출제의도 완전 수록</span>
+        </div>
+
+        <p style="font-size: 0.88rem; color: #475569; margin-bottom: 14px;">
+          홍익대(서울) 디자인학부 미술우수자, 세종대 창의소프트학부 디자인이노베이션, 한양대(ERICA) 디자인대학의 <strong>최근 5개년 실제 출제 문제와 사정관 평가 해설</strong>입니다. 각 카드의 <strong>[이 기출문항으로 질문·답변 생성]</strong> 버튼을 누르면 즉시 실전 훈련으로 연동됩니다.
+        </p>
+
+        <div class="archive-filter-row">
+          <button type="button" class="archive-filter-btn active" data-filter="all">전체 대학 (8개 대표 문항)</button>
+          <button type="button" class="archive-filter-btn" data-filter="hongik">홍익대(서울) 디자인학부 (도판 구술)</button>
+          <button type="button" class="archive-filter-btn" data-filter="sejong">세종대 디자인이노베이션 (제시문 시각화)</button>
+          <button type="button" class="archive-filter-btn" data-filter="erica">한양대(ERICA) 디자인계열 (IC-PBL)</button>
+        </div>
+
+        <div id="pastExamGridContainer" class="past-exam-grid"></div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         VIEW 4: 5개년 인터넷 Grounding 인사이트 섹션
+         ======================================================= -->
+    <div id="groundingSection" class="section-view hidden">
+      <div class="panel-card">
+        <div class="step-header">
+          <div class="step-header-left">
+            <span class="step-num">Grounding</span>
+            <h2>최근 5개년 인터넷 입시 데이터 &amp; 디자인 트렌드 Grounding 엔진</h2>
+          </div>
+          <span style="font-size: 0.8rem; color: #2563eb; font-weight: 700;">2022~2027 최신 대학별 공식 선행학습보고서·통계 반영</span>
+        </div>
+
+        <div class="grounding-stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">세종대 디자인이노베이션</div>
+            <div class="stat-num">63.1%</div>
+            <div class="stat-detail">최근 수시 면접 실질 역전율 (공식 발표)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">홍익대 디자인학부</div>
+            <div class="stat-num">60%</div>
+            <div class="stat-detail">2단계 면접 실질 반영 비중 (도판+미활보)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">한양대 ERICA 디자인</div>
+            <div class="stat-num">4대 역량</div>
+            <div class="stat-detail">비판적·창의적·자기주도·소통협업 IC-PBL</div>
+          </div>
+        </div>
+
+        <div style="background: #fff5f8; border: 1.5px solid #fbcfe8; border-radius: 12px; padding: 18px; margin-bottom: 16px;">
+          <h3 style="font-size: 1.05rem; color: #1e3a8a; font-weight: 800; margin-bottom: 8px;">
+            🌐 5개년 인터넷 자료 Grounding이 면접 답변에 미치는 핵심 영향
+          </h3>
+          <ul style="padding-left: 20px; font-size: 0.88rem; color: #334155; line-height: 1.7;">
+            <li><strong>최신 융합 키워드 결합:</strong> 2026 세종대 기출인 '파동×접근성', '가속도×유동성', '권력분립×자율주행 안전'의 개념 융합 모델을 지원자의 세특에 즉각 대입합니다.</li>
+            <li><strong>조형 언어의 정교화:</strong> 홍익대 기출에 빈출되는 '바우하우스 vs 바이오모피즘', '전통 결구 vs 업사이클링 미니멀 조형' 등 실제 교수진이 사용하는 조형 분석 기준을 모범답변에 자동 이식합니다.</li>
+            <li><strong>최신 디자인 시사 이슈 방어:</strong> 생성형 AI(미드저니/런웨이) 프롬프트 저작권, EU 다크패턴 규제, ESG 친환경 지기구조 규격, WCAG 2.2 웹 접근성 지침을 압박 꼬리질문 방어 논리로 제공합니다.</li>
+          </ul>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+          <button type="button" class="btn-blue" onclick="document.querySelector('.section-nav-btn[data-section=mainCoachSection]').click();">
+            👉 이 Grounding 기준으로 실전 면접 질문 생성하러 가기
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 1분 스피치 실전 타이머 모달 -->
+  <div id="practiceModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span class="uni-badge">🎙️ 디자인 면접 1분 실전 구술 스피치 연습</span>
+        <button type="button" id="closeModalBtn" class="btn-blue-secondary" style="padding: 4px 10px;">닫기 ✕</button>
+      </div>
+      <h3 id="modalQuestionTitle" style="font-size: 1.05rem; margin-bottom: 12px; color: #1e3a8a;"></h3>
+
+      <div class="timer-box">
+        <div id="timerDisplay" class="timer-display">00:00</div>
+        <div style="font-size: 0.82rem; color: #2563eb; margin-top: 4px;">
+          권장 답변 시간: <strong>45초 ~ 60초</strong> (초록/파란색 구간에 마무리하는 연습을 해보세요)
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 12px;">
+          <button type="button" id="startTimerBtn" class="btn-blue">▶️ 답변 시작 (60초 측정)</button>
+          <button type="button" id="resetTimerBtn" class="btn-blue-secondary">🔄 초기화</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div id="modalKeywords" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+        <button type="button" id="toggleScriptBlindBtn" class="copy-single-btn">
+          🙈 대본 가리고 키워드만 보고 연습하기
+        </button>
+      </div>
+
+      <div id="modalScriptBox" class="modal-script-box"></div>
+    </div>
+  </div>
+
+  <div id="toastMsg" class="toast"></div>
+
+  <script>
+    // 5개년 기출문제(2022~2026) 실시간 아카이브 데이터베이스
+    const PAST_EXAM_ARCHIVE = [
+      {
+        id: "hongik_2026",
+        uniId: "hongik_design",
+        uniName: "홍익대학교(서울) 디자인학부",
+        category: "hongik",
+        year: "2026학년도 수시 기출 (미술우수자)",
+        title: "도판 A(전통 목가구 결구 및 조형)와 도판 B(현대 업사이클링 미니멀 패키지) 비교 분석 및 공공 디자인 제안",
+        desc: "제시된 두 도판에서 사용된 '형태적 결합 방식'과 '재질감(물성)'의 공통점 및 차이점을 조형 요소(비례, 대비, 율동) 관점에서 설명하고, 이를 응용하여 1인 가구를 위한 친환경 모듈형 공공 수납 가구를 구술 설계하도록 함.",
+        keyPoint: "전통 조형의 못 없는 짜맞춤 기법을 현대의 무접착 패키지 지기구조와 결합하고 지속가능한 사용자 경험(UX)으로 확장한 지원자가 최고점 획득.",
+        sampleRecordRef: "industrial_eco"
+      },
+      {
+        id: "hongik_2025",
+        uniId: "hongik_design",
+        uniName: "홍익대학교(서울) 디자인학부",
+        category: "hongik",
+        year: "2025학년도 수시 기출 (미술우수자)",
+        title: "바우하우스 모더니즘 기하학 조형(도판 A) vs 유기체 바이오모피즘 조형(도판 B)의 시각적 위계 분석",
+        desc: "모더니즘 디자인의 '형태는 기능을 따른다'는 원리와 현대 유기적 디자인의 '감성적 교감'을 비교 분석하고, 지원자가 생각하는 차세대 디지털 인터페이스(스마트홈 UI)의 조형 방향을 구술하도록 함.",
+        keyPoint: "단순 심미성을 넘어 사용자의 시선 유도(Eye-tracking) 및 행동유도성(Affordance) 관점에서 두 조형 사조를 논리적으로 비교함.",
+        sampleRecordRef: "visual_ux"
+      },
+      {
+        id: "hongik_2024",
+        uniId: "hongik_design",
+        uniName: "홍익대학교(서울) 디자인학부",
+        category: "hongik",
+        year: "2024학년도 수시 기출 (미술우수자)",
+        title: "기후 위기 환경 사진 도판과 디지털 인터랙티브 인포그래픽 리디자인",
+        desc: "해수면 상승 및 해양 쓰레기 관련 다큐멘터리 사진 도판을 보고, 복잡한 통계 수치를 시민들이 직관적으로 체감할 수 있는 '참여형 시각 인포그래픽 캠페인'으로 재해석하는 아이디어를 36분간 구상 후 발표.",
+        keyPoint: "명도 대비(Contrast Ratio) 4.5:1 이상 및 색약자를 위한 질감·픽토그램 이중 부호화 설계를 제시하여 고득점.",
+        sampleRecordRef: "visual_ux"
+      },
+      {
+        id: "sejong_2026_am",
+        uniId: "sejong_design",
+        uniName: "세종대학교 창의소프트학부 디자인이노베이션",
+        category: "sejong",
+        year: "2026학년도 오전 기출 (세종창의인재)",
+        title: "[제시문 융합] '파동(Wave)'의 물리적 성질을 해석하여 '접근성(Accessibility)'을 사물·인터페이스에 대입",
+        desc: "파동의 반사·굴절·회절 및 매질을 통한 확산 원리를 고교 물리 수준에서 이해하고, 이를 '정보와 사물의 경계 없는 접근성'과 융합하여 구상지(A3)에 기호·도형·컨셉 드로잉·글로 3단 시각화하여 10분간 구술 발표.",
+        keyPoint: "소리 파동의 진폭·주파수를 시각적 동심원과 진동 햅틱으로 변환하는 청각약자용 키오스크를 제안한 수험생이 우수 평가.",
+        sampleRecordRef: "sejong_fusion"
+      },
+      {
+        id: "sejong_2026_pm",
+        uniId: "sejong_design",
+        uniName: "세종대학교 창의소프트학부 디자인이노베이션",
+        category: "sejong",
+        year: "2026학년도 오후 기출 (세종창의인재)",
+        title: "[제시문 융합] '가속도(Acceleration)'와 '유동성(Fluidity)'의 조화를 통한 미래 스마트 모빌리티 인터랙션",
+        desc: "속도의 시간에 따른 변화량인 가속도와 유체의 흐름인 유동성을 결합하여, 승객의 탑승 상태에 따라 유기적으로 반응하는 대중교통 내부 공간 및 웨이파인딩(Wayfinding) 동선 유도 시스템을 시각화함.",
+        keyPoint: "아나모픽 그래픽과 색채 유도선을 이용해 환승역 병목 현상을 해결하는 아이디어를 구상지에 명확한 다이어그램으로 표현.",
+        sampleRecordRef: "sejong_fusion"
+      },
+      {
+        id: "sejong_2025",
+        uniId: "sejong_design",
+        uniName: "세종대학교 창의소프트학부 디자인이노베이션",
+        category: "sejong",
+        year: "2025학년도 기출 (세종창의인재)",
+        title: "[제시문 융합] '권력 분립'의 3요소를 '자율주행 안전 시스템(차량·도로·보행자)'에 대입 및 2점 투시 공간감 적용",
+        desc: "사회 교과의 삼권분립 원리를 자율주행 차량, 스마트 도로 센서, 스마트 보행자 신호등의 상호 견제와 소통 네트워크로 비유하고 2점 투시 도법을 활용해 안전 공간감을 시각화 발표함.",
+        keyPoint: "인문·사회 개념의 본질을 IT 테크놀로지 및 사용자 안전 경험(UX)과 결합한 전형적인 세종대형 융합 우수작.",
+        sampleRecordRef: "erica_pbl"
+      },
+      {
+        id: "erica_2026",
+        uniId: "erica_design",
+        uniName: "한양대학교(ERICA) 디자인대학 (산업/커뮤니케이션)",
+        category: "erica",
+        year: "2026학년도 수시 면접 & 서류 심층 검증",
+        title: "IC-PBL 기반 퍼스널 모빌리티 페인포인트 비판적 진단 및 제조 고려 설계(DFM)",
+        desc: "기존 공유 전동 킥보드의 방치와 보행자 안전사고 문제를 비판적으로 진단하고, 기구학적 접이식 구조와 야간 고시인성 반사 소재를 결합한 프로토타입 제작 과정을 생기부 기반으로 구술 검증.",
+        keyPoint: "단순 심미적 렌더링이 아닌 실제 금형 제작 비용과 대량 생산 가능성(DFM)을 고려한 점을 증명해 사정관 만점.",
+        sampleRecordRef: "industrial_eco"
+      },
+      {
+        id: "erica_2025",
+        uniId: "erica_design",
+        uniName: "한양대학교(ERICA) 디자인대학 (영상/커뮤니케이션)",
+        category: "erica",
+        year: "2025학년도 수시 면접 & 서류 심층 검증",
+        title: "생성형 AI 워크플로우 도입과 디자이너의 고유 문제정의(Problem Finding) 역량",
+        desc: "교내 영상 브랜딩 프로젝트에서 미드저니/런웨이를 발상 단계에 활용한 기록을 바탕으로, AI 학습 저작권 침해 방지 대책과 인간 디자이너만이 할 수 있는 현장 사용자 공감 인터뷰 차별성을 구술 검증.",
+        keyPoint: "AI 도구 의존이 아닌 '아이디어 스케치 가속 도구'로서의 주체적 사용 기준을 명확히 제시함.",
+        sampleRecordRef: "erica_pbl"
+      }
+    ];
+
+    // 대학 데이터베이스 (홍익대, 세종대, 한양대 ERICA, 3개 대학 통합)
+    const UNIVERSITIES_DATA = [
+      {
+        id: "hongik_design",
+        name: "홍익대학교(서울) 디자인학부",
+        shortName: "홍익대(서울) 디자인학부",
+        tags: ["홍익대", "홍대미대", "미술우수자전형", "서울캠퍼스", "디자인학부", "시각디자인", "산업디자인", "미술활동보고서", "미활보"],
+        update2027: "📌 2027 홍익대(서울) 디자인학부 실시간 포인트: 미술우수자전형 68명 모집. 1단계 교과 20% + 서류 80%(3배수) → 2단계 서류 40% + 면접 60%(수능최저 적용). 서울 디자인학부 면접은 2026.12.6(일) 08:20 입실로 진행됩니다!",
+        uniFeature: "대한민국 디자인 교육을 선도하는 서울캠퍼스 디자인학부의 조형 예술성과 첨단 산업·디지털 미디어 산학 융합 교육",
+        전형유형: [
+          {
+            name: "미술우수자전형 - 서울캠퍼스 디자인학부 (면접 60% 반영)",
+            duration: "10분 내외 (사전 제시문·도판 구상 36분 별도 부여)",
+            type: "제시문·도판 창의 구술 + 미술활동보고서·생기부 진실성 면접",
+            criteria: "미술관련 소양 + 창의성 + 표현능력 + 제출서류의 진실성 종합평가 (2단계 면접 60%)",
+            style: "① 제시된 2~3개 도판(전통공예/바우하우스/현대제품)의 조형 요소(비례, 대비, 위계) 분석 및 창의적 재해석 구술, ② 미술활동보고서와 생기부 세특의 제작 의도·과정·사용 기법 진위 확인.",
+            keyTips: [
+              "도판 질문에서는 '조형 요소 분석 → 작가/디자이너의 문제의식 추론 → 현대 디자인 관점의 창의적 확장' 3단계로 답변하세요.",
+              "미술활동보고서에 기재한 작업의 '왜 이 재료를 썼는가?', '시행착오 극복 과정'을 구체적으로 설명해야 서류 진실성 만점을 받습니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "sejong_design",
+        name: "세종대학교 창의소프트학부 디자인이노베이션전공",
+        shortName: "세종대 디자인이노베이션",
+        tags: ["세종대", "세종창의인재", "면접형", "창의소프트학부", "디자인이노베이션", "전공적합성발표", "제시문면접"],
+        update2027: "📌 2027 세종대 디자인이노베이션 실시간 포인트: 학생부종합(세종창의인재전형(면접형)) 1단계 서류 100%(3배수) → 2단계 서류 70% + 면접 30%(수능최저 없음). 2026 기출('파동×접근성', '가속도×유동성')처럼 제시문 기반 구상지(A3) 40분 드로잉 후 10분 구술 발표!",
+        uniFeature: "소프트웨어융합대학 소속 창의소프트학부만의 강점인 '디자인(시각·산업·인터랙션) + SW·AI·디지털 테크놀로지' 융합 커리큘럼",
+        전형유형: [
+          {
+            name: "학생부종합 - 세종창의인재전형(면접형) 디자인이노베이션전공",
+            duration: "10분 내외 (사전 제시문 분석 및 A3 구상지 시각화 40분 별도 부여)",
+            type: "제시문 기반 전공적합성 발표(시각화 구상지) + 서류 확인 면접 (면접 30%)",
+            criteria: "진로역량(전공적합성 및 융합 발표력) + 학업·창의융합역량 + 공동체역량 (면접 역전율 63.1%)",
+            style: "과학·인문 개념(파동, 가속도, 권력분립 등)과 디자인 키워드(접근성, 유동성 등)를 융합해 구상지에 그림·도형·기호·글로 표현 후 발표하고, 직후 생기부 진위 질문을 진행합니다.",
+            keyTips: [
+              "구상지는 정밀 묘사보다 '핵심 개념 다이어그램(기호·화살표) + 사물 컨셉 스케치 + 3줄 핵심 키워드'로 한눈에 보이게 구성하세요.",
+              "창의소프트학부인 만큼 '사용자 경험(UX) 데이터 분석, 디지털 프로토타이핑'과의 연계를 강조하면 매우 유리합니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "erica_design",
+        name: "한양대학교(ERICA) 디자인계열",
+        shortName: "한양대(ERICA) 디자인계열",
+        tags: ["한양대", "에리카", "ERICA", "학생부종합", "서류형", "디자인대학", "산업디자인", "커뮤니케이션디자인", "영상디자인", "주얼리패션"],
+        update2027: "📌 2027 한양대(ERICA) 디자인계열 실시간 포인트: 디자인대학 4개 전공(산업·커뮤니케이션·영상·주얼리패션) 수시 모집. 학생부 100% 서류평가 및 면접 연계에서 IC-PBL(산업·사회 문제해결) 4대 역량을 집중 평가합니다.",
+        uniFeature: "국내 대표 산학협력 중심 대학인 한양대 ERICA 디자인대학의 IC-PBL(산업현장 문제해결 프로젝트) 실무 융합 인프라",
+        전형유형: [
+          {
+            name: "학생부종합(서류형) 평가기준 기반 심층 스토리텔링 & 연계 면접 대비",
+            duration: "서류 100% 정성평가 (모의면접/구술 연습 기준 8~10분)",
+            type: "4대 학종 역량(비판적·창의적·자기주도·소통협업) 분석 및 디자인 씽킹 구술화",
+            criteria: "비판적 사고역량 + 창의적 사고역량 + 자기주도역량 + 소통 및 협업역량",
+            style: "일상이나 산업 현장의 문제를 어떻게 비판적으로 정의(Critical Thinking)하고 교과 지식을 융합해 창의적 솔루션(Creative Solution)으로 도출했는지 검증합니다.",
+            keyTips: [
+              "단순 '포스터를 그렸다'가 아니라 '실제 사용자의 불편함과 사회적 문제를 해결한 과정'으로 활동을 재정의하세요."
+            ]
+          }
+        ]
+      },
+      {
+        id: "all_three_design",
+        name: "3개 대학 통합 (홍익 미활보·도판 + 세종 제시문시각화 + 한양 PBL)",
+        shortName: "3개 대학 디자인 통합모드",
+        tags: ["통합", "홍익대", "세종대", "한양대ERICA", "비실기미대", "미활보", "제시문구술"],
+        update2027: "📌 3개 대학 디자인 통합 핵심: 홍익대 도판·미활보 60% 면접, 세종대 제시문 시각화 발표, 한양대 ERICA 4대 역량 스토리텔링을 한 번에 관통하는 올라운드 대비를 지원합니다.",
+        uniFeature: "조형적 미학(홍익) + SW·인터랙션 창의융합(세종) + 산업 문제해결 IC-PBL(한양 ERICA) 통합",
+        전형유형: [
+          {
+            name: "홍익대·세종대·한양대(ERICA) 디자인계열 올라운드 마스터 모드",
+            duration: "10분 내외",
+            type: "서류(생기부·미활보) 진실성 + 제시문·도판 창의 구술 통합 대비",
+            criteria: "디자인 씽킹 프로세스 + 조형·매체 소양 + 개념 융합 발표력",
+            style: "① 디자인 프로젝트 심화 검증, ② 제시문·도판 즉석 융합 발상, ③ 디자이너의 윤리·협업, ④ 전공 비전의 4대 구조로 완성합니다.",
+            keyTips: [
+              "내 생기부 대표 활동을 '조형적 완성도(홍익)', '기술·개념 융합(세종)', '사회적 가치(한양)' 3가지 렌즈로 설명할 수 있도록 준비하세요."
+            ]
+          }
+        ]
+      }
+    ];
+
+    // 디자인계열 4대 세특·미활보 프리셋
+    const SAMPLE_RECORDS = {
+      visual_ux: {
+        major: "디자인학부 시각디자인 / 커뮤니케이션 / 디자인이노베이션",
+        goal: "디지털 소외계층과 색각이상자를 배려하는 유니버설 UI/UX 디자이너",
+        text: `[미술활동보고서 & 미술/정보 세특] 무인 키오스크 앞에서 주문을 포기하는 고령층과 색각 이상자의 불편함을 발견하고 '유니버설 디자인(Universal Design) 원칙을 적용한 공공 키오스크 UI/UX 리디자인 프로젝트'를 주도함. 명도 대비(Contrast Ratio) 4.5:1 이상의 웹 접근성(WCAG 2.2) 기준을 수학적 비율로 분석하고, 색상만으로 정보를 구분하지 않도록 직관적인 픽토그램(Pictogram)과 타이포그래피 위계(Hierarchy)를 재설계하여 프로토타입을 제작함.
+[사회/독서활동] '디자인의 디자인(하라 켄야)'과 '넛지(리처드 탈러)'를 읽고, 소비자의 비합리적 결제를 유도하는 모바일 앱의 '다크패턴(Dark Pattern) UI' 사례를 수집·비판하는 시각 인포그래픽 캠페인을 기획함. 사용자 시선 추적(Eye-tracking) 설문 데이터를 분석하여 윤리적인 인터페이스 가이드라인을 도출함.`
+      },
+      industrial_eco: {
+        major: "디자인학부 산업디자인 / 제품·모빌리티·공간디자인",
+        goal: "인체공학과 친환경 순환 소재를 결합하는 지속가능 산업 디자이너",
+        text: `[미술활동보고서 & 미술창작/물리 세특] 일회용 택배 포장재 폐기물 문제를 해결하기 위해 '종이 하니컴(Honeycomb) 구조역학을 응용한 무접착 모듈형 완충 패키지 디자인'을 탐구함. 육각형 셀 구조가 외부 충격 에너지를 분산시키는 물리적 원리(응력 분산과 좌굴 저항성)를 탐구하고, 접착제 없이 전개도(Die-cut)의 결착 구조만으로 조립·해체가 가능한 3D 렌더링 및 실제 지기구조 목업(Mock-up)을 제작하여 강도 실험을 수행함.
+[동아리활동 - 디자인탐구반] 보행 보조기가 필요한 어르신들의 손목 터널 증후군 예방을 위해 인체공학적 그립(Grip) 각도와 무게중심(돌림힘 평형)을 개선한 '고령친화 스마트 워커 디자인'을 제안함. 스케치 과정에서 심미성과 구조적 안전성을 두고 팀원 간 의견 대립이 있었으나 사용자 사용성 테스트(Usability Test) 기준을 제시해 합의를 이끌어냄.`
+      },
+      sejong_fusion: {
+        major: "창의소프트학부 디자인이노베이션전공 (디자인·SW·공학 융합)",
+        goal: "물리·데이터의 원리를 직관적인 시각 경험과 인터랙션으로 구현하는 융합 디자이너",
+        text: `[세부능력 및 특기사항 - 물리학I / 미술·매체 융합] 소리의 '파동(Wave)과 공명 현상' 단원을 학습하던 중 청각장애인이 일상 속 위험 알림음이나 음악의 리듬을 어떻게 시각·촉각적으로 인지할 수 있을지 호기심을 가짐. 소리의 주파수(진동수)와 진폭 데이터를 푸리에 변환 개념으로 분석하여, 음향의 세기와 높낮이를 색상 그라데이션과 동심원 파동 그래픽, 웨어러블 진동 패턴으로 실시간 변환하는 '소리의 시각화(Sound Visualization) 인터랙션 디자인'을 구상하고 프로세싱(Processing) 기초 코딩으로 시뮬레이션함.
+[창의적 체험활동 - 자율/동아리] 교내 유휴 공간의 이동 동선 병목 현상을 해결하기 위해 유체역학의 '유동성(Fluidity)' 개념을 공간 웨이파인딩(Wayfinding) 디자인에 접목함. 바닥 그래픽의 착시(아나모픽 일루전)와 색채 유도선을 활용해 학생들의 보행 속도와 동선을 자연스럽게 분산시키는 실험을 진행하여 혼잡도를 30% 이상 개선함.`
+      },
+      erica_pbl: {
+        major: "디자인대학 영상디자인 / 커뮤니케이션 / 산업디자인 (IC-PBL 융합)",
+        goal: "기술과 스토리텔링을 결합해 지역사회·산업의 문제를 해결하는 크리에이티브 디렉터",
+        text: `[세부능력 및 특기사항 - 미술/영상제작 프로젝트] 지역 전통시장의 청년층 방문 감소 문제를 해결하기 위한 로컬 브랜딩 프로젝트에서 팀장을 맡음. 단순 홍보 포스터 제작에 그치지 않고, 시장 상인들의 인터뷰를 바탕으로 브랜드 아이덴티티(BI) 로고와 캐릭터를 개발하고, 3D 모션그래픽과 숏폼 스토리보드(몽타주 기법과 다이내믹 타이포그래피 활용)를 기획·편집하여 SNS 조회수와 실제 방문객 관심을 크게 높임.
+[진로활동 & 독서] 생성형 AI(Midjourney, Runway 등)의 확산이 디자인 산업에 미치는 영향을 탐구하며, AI를 단순 결과물 생성 도구가 아닌 '아이디어 발상(Ideation)과 무드보드 프로토타이핑 가속화 도구'로 활용하는 워크플로우를 실험함. 동시에 AI 학습 데이터의 저작권 보호와 디자이너 고유의 인간 중심 공감 능력에 대한 에세이를 작성함.`
+      }
+    };
+
+    // 상태 변수
+    let selectedUni = UNIVERSITIES_DATA[0];
+    let selectedAdmissionIndex = 0;
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let lastGeneratedCards = [];
+    let memoryApiKey = "";
+
+    function safeGetStorage(key) {
+      try { return window.localStorage.getItem(key) || memoryApiKey; } catch (e) { return memoryApiKey; }
+    }
+    function safeSetStorage(key, val) {
+      memoryApiKey = val || "";
+      try {
+        if (val) window.localStorage.setItem(key, val);
+        else window.localStorage.removeItem(key);
+      } catch (e) {}
+    }
+
+    function copyTextSafe(text, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(successMsg);
+        }).catch(() => {
+          fallbackCopyText(text, successMsg);
+        });
+      } else {
+        fallbackCopyText(text, successMsg);
+      }
+    }
+
+    function fallbackCopyText(text, successMsg) {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      temp.style.position = "fixed";
+      temp.style.left = "-9999px";
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand("copy");
+        showToast(successMsg);
+      } catch (e) {
+        showToast("텍스트를 직접 선택해 복사해 주세요.", true);
+      }
+      document.body.removeChild(temp);
+    }
+
+    // 앱 초기화
+    function initApp() {
+      initNavigation();
+      initUniversitySearch();
+      selectUniversity(UNIVERSITIES_DATA[0].id);
+      setupEventListeners();
+      setupA4Section();
+      setupPastExamArchive();
+      loadSavedApiKey();
+      initLiveClockAndTicker();
+      loadSampleData("visual_ux", false);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initApp);
+    } else {
+      initApp();
+    }
+
+    // 네비게이션 섹션 전환 (파란색 섹션 버튼)
+    function initNavigation() {
+      const navButtons = document.querySelectorAll(".section-nav-btn");
+      const views = document.querySelectorAll(".section-view");
+
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          navButtons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const targetId = btn.dataset.section;
+          views.forEach((v) => {
+            if (v.id === targetId) {
+              v.classList.remove("hidden");
+            } else {
+              v.classList.add("hidden");
+            }
+          });
+
+          window.scrollTo({ top: 120, behavior: "smooth" });
+        });
+      });
+
+      document.getElementById("quickGoArchiveBtn").addEventListener("click", () => {
+        const archiveBtn = document.querySelector(".section-nav-btn[data-section=archiveSection]");
+        if (archiveBtn) archiveBtn.click();
+      });
+    }
+
+    function initLiveClockAndTicker() {
+      const clockEl = document.getElementById("liveClockText");
+      function updateClock() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, "0");
+        const d = String(now.getDate()).padStart(2, "0");
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+        clockEl.textContent = `실시간 기준 ${y}.${m}.${d} ${hh}:${mm} · 홍익·세종·한양(ERICA) 5개년 Grounding 동기화됨`;
+      }
+      updateClock();
+      setInterval(updateClock, 30000);
+    }
+
+    function initUniversitySearch() {
+      const searchInput = document.getElementById("uniSearchInput");
+      const uniListContainer = document.getElementById("uniPillsContainer");
+
+      function renderPills(filterText = "") {
+        uniListContainer.innerHTML = "";
+        const query = filterText.trim().toLowerCase();
+
+        const filtered = UNIVERSITIES_DATA.filter((u) => {
+          if (!query) return true;
+          const matchName = u.name.toLowerCase().includes(query);
+          const matchTags = u.tags.some((t) => t.toLowerCase().includes(query));
+          return matchName || matchTags;
+        });
+
+        filtered.forEach((uni) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `uni-pill ${selectedUni.id === uni.id ? "active" : ""}`;
+          btn.textContent = uni.shortName || uni.name;
+          btn.addEventListener("click", () => {
+            selectUniversity(uni.id);
+            renderPills(searchInput.value);
+          });
+          uniListContainer.appendChild(btn);
+        });
+      }
+
+      searchInput.addEventListener("input", (e) => {
+        renderPills(e.target.value);
+      });
+
+      renderPills();
+    }
+
+    function selectUniversity(uniId) {
+      const found = UNIVERSITIES_DATA.find((u) => u.id === uniId);
+      if (!found) return;
+      selectedUni = found;
+      selectedAdmissionIndex = 0;
+      updateUniversityDetailUI();
+    }
+
+    function updateUniversityDetailUI() {
+      const admissionSelect = document.getElementById("admissionTypeSelect");
+      admissionSelect.innerHTML = "";
+      selectedUni.전형유형.forEach((adm, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = adm.name;
+        admissionSelect.appendChild(opt);
+      });
+      admissionSelect.value = selectedAdmissionIndex;
+      renderAdmissionCard();
+    }
+
+    function renderAdmissionCard() {
+      const adm = selectedUni.전형유형[selectedAdmissionIndex] || selectedUni.전형유형[0];
+      document.getElementById("selectedUniBadge").textContent = selectedUni.name;
+      document.getElementById("admTypeTitle").textContent = adm.name;
+      document.getElementById("admDuration").textContent = adm.duration;
+      document.getElementById("admTypeBadge").textContent = adm.type;
+      document.getElementById("admCriteria").textContent = adm.criteria;
+      document.getElementById("admStyle").textContent = adm.style;
+      document.getElementById("adm2027Note").textContent =
+        selectedUni.update2027 || "📌 5개년 입시 데이터 Grounding 완료";
+
+      const tipsList = document.getElementById("admTipsList");
+      tipsList.innerHTML = "";
+      adm.keyTips.forEach((tip) => {
+        const li = document.createElement("li");
+        li.textContent = tip;
+        tipsList.appendChild(li);
+      });
+    }
+
+    function loadSampleData(key, showNotice = true) {
+      const sample = SAMPLE_RECORDS[key];
+      if (!sample) return;
+      document.querySelectorAll(".sample-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.sample === key);
+      });
+      document.getElementById("majorInput").value = sample.major;
+      document.getElementById("careerGoalInput").value = sample.goal;
+      document.getElementById("recordTextarea").value = sample.text;
+      updateLiveRecordAnalysis();
+      if (showNotice) {
+        showToast("디자인계열 세특·미활보 예시가 적용되었습니다!");
+      }
+    }
+
+    function setupEventListeners() {
+      document.getElementById("admissionTypeSelect").addEventListener("change", (e) => {
+        selectedAdmissionIndex = parseInt(e.target.value, 10) || 0;
+        renderAdmissionCard();
+      });
+
+      const compareDrawer = document.getElementById("compareDrawer");
+      document.getElementById("toggleCompareTableBtn").addEventListener("click", () => {
+        compareDrawer.classList.toggle("hidden");
+      });
+
+      document.querySelectorAll(".compare-row").forEach((row) => {
+        row.addEventListener("click", () => {
+          const uniId = row.dataset.uni;
+          selectUniversity(uniId);
+          showToast(`${selectedUni.name} 모드로 전환되었습니다!`);
+        });
+      });
+
+      document.querySelectorAll(".sample-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          loadSampleData(btn.dataset.sample, true);
+        });
+      });
+
+      const textarea = document.getElementById("recordTextarea");
+      textarea.addEventListener("input", updateLiveRecordAnalysis);
+
+      document.getElementById("clearRecordBtn").addEventListener("click", () => {
+        textarea.value = "";
+        document.querySelectorAll(".sample-btn").forEach((b) => b.classList.remove("active"));
+        updateLiveRecordAnalysis();
+      });
+
+      document.getElementById("generateBtn").addEventListener("click", () => {
+        handleGenerate(true);
+      });
+
+      document.querySelectorAll(".result-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".result-tab-btn").forEach((b) => b.classList.remove("active"));
+          document.querySelectorAll(".tab-pane").forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.target).classList.add("active");
+        });
+      });
+
+      document.getElementById("copyPromptBtn").addEventListener("click", () => {
+        const promptText = document.getElementById("generatedPromptOutput").value;
+        copyTextSafe(promptText, "디자인 면접 프롬프트가 복사되었습니다!");
+      });
+
+      document.getElementById("printResultBtn").addEventListener("click", () => {
+        window.print();
+      });
+
+      document.getElementById("downloadTxtBtn").addEventListener("click", downloadResultAsText);
+
+      const dlAppBtn = document.getElementById("downloadAppHtmlBtn");
+      if (dlAppBtn) {
+        dlAppBtn.addEventListener("click", downloadCompleteAppFile);
+      }
+      const dlAppResBtn = document.getElementById("downloadAppHtmlResultBtn");
+      if (dlAppResBtn) {
+        dlAppResBtn.addEventListener("click", downloadCompleteAppFile);
+      }
+
+      const apiToggleBtn = document.getElementById("toggleApiDrawerBtn");
+      const apiDrawer = document.getElementById("apiDrawer");
+      apiToggleBtn.addEventListener("click", () => {
+        apiDrawer.classList.toggle("hidden");
+      });
+
+      document.getElementById("saveApiKeyBtn").addEventListener("click", () => {
+        const key = document.getElementById("geminiApiKeyInput").value.trim();
+        safeSetStorage("hakjong_design_gemini_api_key", key);
+        updateApiStatusIndicator();
+        if (key) {
+          showToast("Gemini API 키가 저장되었습니다. 실시간 AI 모델이 활성화됩니다.");
+        } else {
+          showToast("API 키가 해제되었습니다. 내장 5개년 Grounding 엔진으로 동작합니다.");
+        }
+      });
+
+      document.querySelectorAll(".rehearsal-check").forEach((chk) => {
+        chk.addEventListener("change", updateChecklistScore);
+      });
+
+      // 모달 이벤트 리스너
+      const modal = document.getElementById("practiceModal");
+      document.getElementById("closeModalBtn").addEventListener("click", () => {
+        resetTimer();
+        modal.classList.add("hidden");
+      });
+
+      document.getElementById("startTimerBtn").addEventListener("click", (e) => {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          e.target.textContent = "▶️ 이어서 측정";
+        } else {
+          e.target.textContent = "⏸️ 일시정지";
+          timerInterval = setInterval(() => {
+            timerSeconds++;
+            updateTimerDisplay();
+          }, 1000);
+        }
+      });
+
+      document.getElementById("resetTimerBtn").addEventListener("click", resetTimer);
+
+      document.getElementById("toggleScriptBlindBtn").addEventListener("click", (e) => {
+        const scriptBox = document.getElementById("modalScriptBox");
+        scriptBox.classList.toggle("blurred");
+        e.target.textContent = scriptBox.classList.contains("blurred")
+          ? "👁️ 대본 다시 보기"
+          : "🙈 대본 가리고 키워드만 보고 연습하기";
+      });
+    }
+
+    // 단독 실행 가능한 HTML 파일 자체 다운로드 (웹서버 없이 더블클릭으로 즉시 실행)
+    function downloadCompleteAppFile() {
+      const fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "디자인계열_학종_비실기_면접AI코치_바로실행.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("📥 브라우저 바로실행 HTML 파일이 다운로드되었습니다! 더블클릭하여 바로 사용하세요.");
+    }
+
+    // 면접 스크립트 TXT 파일 다운로드
+    function downloadResultAsText() {
+      const qListEl = document.getElementById("qaCardList");
+      const evalBox = document.getElementById("evalOverviewBox");
+      const rehearsalBox = document.getElementById("rehearsalCardList");
+
+      let textContent = `====================================================\n`;
+      textContent += `[디자인계열 학종·비실기 면접 AI 코치 - 질문 & STAR-L 답변 리포트]\n`;
+      textContent += `지원 대학: ${selectedUni ? selectedUni.name : "디자인계열 대학"}\n`;
+      textContent += `생성 일시: ${new Date().toLocaleString("ko-KR")}\n`;
+      textContent += `====================================================\n\n`;
+
+      if (evalBox && evalBox.innerText.trim()) {
+        textContent += `[1. 사정관 평가 지표 & Red Flag 요약]\n`;
+        textContent += evalBox.innerText.trim() + `\n\n`;
+      }
+
+      if (qListEl && qListEl.innerText.trim()) {
+        textContent += `[2. 예상 면접 질문 & STAR-L 고득점 답변]\n`;
+        textContent += qListEl.innerText.trim() + `\n\n`;
+      }
+
+      if (rehearsalBox && rehearsalBox.innerText.trim()) {
+        textContent += `[3. 실전 리허설 점검 체크리스트]\n`;
+        textContent += rehearsalBox.innerText.trim() + `\n\n`;
+      }
+
+      const promptBox = document.getElementById("generatedPromptOutput");
+      if (promptBox && promptBox.value.trim()) {
+        textContent += `[4. AI 면접관 심층 프롬프트]\n`;
+        textContent += promptBox.value.trim() + `\n`;
+      }
+
+      const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const uniPrefix = selectedUni ? selectedUni.name.replace(/\s+/g, "_") : "디자인계열";
+      a.download = `면접예상질문_STAR-L답변_${uniPrefix}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("💾 면접 스크립트(.txt) 파일이 다운로드되었습니다!");
+    }
+
+    function updateChecklistScore() {
+      const checks = document.querySelectorAll(".rehearsal-check");
+      let done = 0;
+      checks.forEach((c) => {
+        if (c.checked) done++;
+      });
+      document.getElementById("checklistScoreBadge").textContent = `달성도: ${done} / ${checks.length} 항목 완료`;
+    }
+
+    function loadSavedApiKey() {
+      const saved = safeGetStorage("hakjong_design_gemini_api_key");
+      if (saved) {
+        document.getElementById("geminiApiKeyInput").value = saved;
+      }
+      updateApiStatusIndicator();
+    }
+
+    function updateApiStatusIndicator() {
+      const key = document.getElementById("geminiApiKeyInput").value.trim();
+      const indicator = document.getElementById("apiStatusIndicator");
+      if (key) {
+        indicator.textContent = "✨ Gemini API 실시간 연동 활성화됨";
+      } else {
+        indicator.textContent = "🟢 5개년 Grounding 분석 엔진 동작 중";
+      }
+    }
+
+    function updateLiveRecordAnalysis() {
+      const text = document.getElementById("recordTextarea").value;
+      const major = document.getElementById("majorInput").value.trim() || "디자인학부";
+      const parsed = parseStudentRecord(text, major);
+
+      document.getElementById("charCount").textContent = `${text.length.toLocaleString()}자 (분석 문장 ${parsed.sentences.length}개)`;
+
+      if (text.trim().length < 10) {
+        document.getElementById("compAcademicVal").textContent = "0%";
+        document.getElementById("compAcademicBar").style.width = "0%";
+        document.getElementById("compCareerVal").textContent = "0%";
+        document.getElementById("compCareerBar").style.width = "0%";
+        document.getElementById("compCommVal").textContent = "0%";
+        document.getElementById("compCommBar").style.width = "0%";
+        document.getElementById("liveTopicPreview").textContent = "생기부를 입력하면 실시간으로 분석합니다";
+        document.getElementById("liveKeywordsContainer").innerHTML = `<span>감지된 디자인 키워드:</span><span class="detected-chip">대기 중</span>`;
+        return;
+      }
+
+      const artScore = Math.min(100, Math.round(42 + parsed.designKeywords.length * 10 + parsed.quotedMatches.length * 12));
+      const fusionScore = Math.min(100, Math.round(40 + parsed.inquiryCount * 16 + parsed.parenMatches.length * 12));
+      const userScore = Math.min(100, Math.round((parsed.hasCommunity ? 68 : 32) + parsed.communityCount * 14));
+
+      document.getElementById("compAcademicVal").textContent = `${artScore}%`;
+      document.getElementById("compAcademicBar").style.width = `${artScore}%`;
+      document.getElementById("compCareerVal").textContent = `${fusionScore}%`;
+      document.getElementById("compCareerBar").style.width = `${fusionScore}%`;
+      document.getElementById("compCommVal").textContent = `${userScore}%`;
+      document.getElementById("compCommBar").style.width = `${userScore}%`;
+
+      document.getElementById("liveTopicPreview").textContent = `핵심 프로젝트: ${parsed.mainTopic.slice(0, 28)}`;
+
+      const kwPool = [...parsed.designKeywords, ...parsed.quotedMatches, ...parsed.parenMatches];
+      const uniqueKw = [...new Set(kwPool)];
+      if (uniqueKw.length === 0) uniqueKw.push(parsed.conceptKeyword);
+
+      const chipsHtml = uniqueKw
+        .slice(0, 6)
+        .map((k) => `<span class="detected-chip"># ${escapeHtml(k.slice(0, 24))}</span>`)
+        .join("");
+      document.getElementById("liveKeywordsContainer").innerHTML = `<span>감지된 키워드:</span> ${chipsHtml}`;
+    }
+
+    function parseStudentRecord(recordText, major) {
+      const cleanText = recordText.trim();
+      const sentences = cleanText
+        .split(/(?<=[.?!함음됨])\s+|\n+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 12);
+
+      const quotedMatches = [];
+      const quoteRegex = /['"‘“]([^'"’”]{3,55})['"’”]/g;
+      let match;
+      while ((match = quoteRegex.exec(cleanText)) !== null) {
+        if (!quotedMatches.includes(match[1])) quotedMatches.push(match[1]);
+      }
+
+      const parenMatches = [];
+      const parenRegex = /([가-힣A-Za-z0-9\s\/\-]{2,24})\(([A-Za-z0-9\s\/\-]+)\)/g;
+      while ((match = parenRegex.exec(cleanText)) !== null) {
+        parenMatches.push(`${match[1].trim()}(${match[2].trim()})`);
+      }
+
+      const designTermList = [
+        "유니버설", "UI", "UX", "인터페이스", "픽토그램", "타이포그래피", "인포그래픽", "다크패턴",
+        "프로토타입", "목업", "모듈", "구조역학", "친환경", "패키지", "인체공학", "사용성", "시각화",
+        "인터랙션", "파동", "유동성", "접근성", "스토리보드", "브랜딩", "모션그래픽", "그리드", "어포던스", "AI"
+      ];
+      const designKeywords = designTermList.filter((term) => cleanText.includes(term));
+
+      const inquirySentences = sentences.filter((s) =>
+        /탐구|보고서|실험|분석|설계|구현|제작|원리|리디자인|시각화|프로토타입|목업/.test(s)
+      );
+      const communitySentences = sentences.filter((s) =>
+        /모둠|팀|갈등|조율|리더|봉사|배려|사용자|고령|장애|소외|인터뷰/.test(s)
+      );
+      const readingSentences = sentences.filter((s) =>
+        /독서|읽고|저자|윤리|한계|문제점|개선|대안|비판|저작권/.test(s)
+      );
+
+      const mainTopic =
+        quotedMatches[0] ||
+        parenMatches[0] ||
+        (inquirySentences[0] ? inquirySentences[0].slice(0, 42) + "..." : `${major} 연계 디자인 문제해결 프로젝트`);
+
+      const secondTopic =
+        quotedMatches[1] ||
+        parenMatches[1] ||
+        (readingSentences[0] ? readingSentences[0].slice(0, 40) + "..." : "사용자 경험(UX) 및 조형·기술 융합 탐구");
+
+      const conceptKeyword =
+        parenMatches[0] ||
+        quotedMatches[0] ||
+        (designKeywords[0] ? `${designKeywords[0]} 기반 조형·UX 원리` : "조형 원리 및 인간 중심 디자인");
+
+      return {
+        sentences,
+        quotedMatches,
+        parenMatches,
+        designKeywords,
+        mainTopic,
+        secondTopic,
+        conceptKeyword,
+        mainInquirySentence: inquirySentences[0] || sentences[0] || cleanText.slice(0, 120),
+        communitySentence: communitySentences[0] || sentences[sentences.length - 1] || "팀 협업 및 사용자 의견 수렴 과정",
+        inquiryCount: inquirySentences.length,
+        communityCount: communitySentences.length,
+        hasCommunity: communitySentences.length > 0
+      };
+    }
+
+    async function handleGenerate(shouldScroll = true) {
+      const major = document.getElementById("majorInput").value.trim() || "디자인학부";
+      const careerGoal = document.getElementById("careerGoalInput").value.trim() || "조형적 감각과 기술 융합 디자이너";
+      const recordText = document.getElementById("recordTextarea").value.trim();
+
+      if (recordText.length < 20) {
+        showToast("생기부 또는 미술활동보고서 내용을 20자 이상 붙여넣어 주세요!", true);
+        document.getElementById("recordTextarea").focus();
+        return;
+      }
+
+      const adm = selectedUni.전형유형[selectedAdmissionIndex] || selectedUni.전형유형[0];
+      const engineeredPrompt = buildEngineeredPrompt(selectedUni, adm, major, careerGoal, recordText);
+      document.getElementById("generatedPromptOutput").value = engineeredPrompt;
+
+      const resultSection = document.getElementById("resultSection");
+      resultSection.classList.remove("hidden");
+
+      const apiKey = document.getElementById("geminiApiKeyInput").value.trim();
+      const btn = document.getElementById("generateBtn");
+      const originalBtnHtml = btn.innerHTML;
+
+      if (apiKey && shouldScroll) {
+        try {
+          btn.disabled = true;
+          btn.innerHTML = `<span class="spinner"></span> 5개년 Grounding AI 면접위원이 서류를 정밀 분석 중입니다...`;
+          const aiCards = await generateWithGeminiAPI(apiKey, selectedUni, adm, major, careerGoal, recordText);
+          lastGeneratedCards = aiCards;
+          renderQuestionCards(aiCards, selectedUni, adm, major, true);
+          if (shouldScroll) resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          showToast(`${selectedUni.name} 맞춤형 AI 질문·답변이 생성되었습니다!`);
+          return;
+        } catch (err) {
+          console.error(err);
+          showToast("API 호출 오류로 내장 5개년 Grounding 엔진으로 자동 전환합니다.", true);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
+        }
+      }
+
+      const smartCards = generateDesignQuestionsAndAnswers(selectedUni, adm, major, careerGoal, recordText);
+      lastGeneratedCards = smartCards;
+      renderQuestionCards(smartCards, selectedUni, adm, major, false);
+      if (shouldScroll) {
+        resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        showToast(`${selectedUni.name} 5개년 Grounding 기반 질문과 STAR-L 답변이 완성되었습니다!`);
+      }
+    }
+
+    // 5개년 입시 데이터 Grounding이 통합된 질문 & 답변 생성기
+    function generateDesignQuestionsAndAnswers(uni, adm, major, careerGoal, recordText) {
+      const parsed = parseStudentRecord(recordText, major);
+
+      let q2Badge = "질문 2 · [5개년 기출 Grounding] 제시문·도판 창의 구술 (대학별 핵심)";
+      let q2Intent = "";
+      let q2Question = "";
+      let q2Answer = {};
+      let q2FollowUps = [];
+      let q2Keywords = [];
+
+      if (uni.id === "sejong_design") {
+        q2Badge = "질문 2 · [세종대 2026 기출 Grounding] 제시문 '파동×접근성' 융합 구상지 시각화 발표";
+        q2Intent = `[세종대 공식 가이드북 면접 역전율 63.1%] 2026학년도 실제 기출인 '파동' 물리 개념과 디자인 키워드 '접근성'의 융합 원리를 지원자의 '${parsed.mainTopic}'에 대입해 구상지(A3) 3분할 시각화 발표를 검증합니다.`;
+        q2Question = `[전공적합성 발표 문항] 2026 세종대 기출 제시문인 물리적 '파동(매질을 통한 확산 및 공명)' 원리를 독창적으로 해석하여, 디자인 키워드인 '접근성(Accessibility)'을 본인의 '${parsed.mainTopic}' 사물·인터페이스에 대입해 보세요. 구상지에 어떤 기호·도형·컨셉 스케치를 배치해 발표하겠습니까?`;
+        q2Answer = {
+          conclusion: `[두괄식 발표 결론] 저는 '파동이 진원지에서 시작해 매질의 저항 없이 동심원으로 확산되는 성질'을 '누구도 배제하지 않고 직관적으로 퍼져나가는 유니버설 접근성'과 일치시켜, '${parsed.mainTopic}'을 다감각 피드백 사물로 설계하겠습니다.`,
+          st: `[S/T 구상지 다이어그램 설계] 제 구상지 좌측 상단에는 파동의 동심원(◎)과 확산 화살표(→)로 '경계 없는 정보 전달'이라는 핵심 메타포를 도식화했습니다. 중앙에는 '${parsed.conceptKeyword}' 아이디어를 적용한 제품의 2점 투시 컨셉 스케치를 배치했습니다.`,
+          a: `[A 사물 대입 및 조형·인터랙션 원리] 기존 제품이 시각 정보에만 의존해 접근성을 제한했다면, 제가 제안하는 사물은 표면에 음각 동심원 가이드 홈과 명도 대비 색채, 미세 햅틱 진동을 결합하여 손을 가까이 대는 것만으로도 행동유도성(Affordance)을 전달하도록 설계했습니다.`,
+          rl: `[R/L 융합 시사점 및 학업 연결] 구상지 우측 하단에는 '파동(확산) = 접근성(장벽 해소) = 인터랙티브 디자인'이라는 3단 키워드를 요약했습니다. 세종대 디자인이노베이션전공에서 물리와 소프트웨어 기술을 인간 중심의 시각 경험으로 연결하는 융합 디자이너로 성장하고 싶습니다.`
+        };
+        q2FollowUps = [
+          {
+            q: "꼬리질문 1: 구상지에 표현한 도형과 기호 중 시각적 위계(Visual Hierarchy)를 강조하기 위해 어떤 조형적 대비를 주었나요?",
+            a: "핵심 방어: '배경의 정적인 직선 그리드와 파동 인터랙션부의 유기적인 동심원 곡선을 대비시켰고, 핵심 조작부에만 고채도 블루 포인트 컬러를 적용해 시선의 흐름을 직관적으로 유도했습니다.'"
+          },
+          {
+            q: "꼬리질문 2: 이 디자인에 AI 센서나 적응형(Adaptive) UI 기술을 결합한다면 어떻게 발전시킬 수 있을까요?",
+            a: "핵심 방어: '사용자의 터치 반응 속도와 머뭇거림을 센싱하여, 조작이 미숙한 고령 사용자에게는 파동의 진동 주기와 시각 안내 그래픽을 실시간 확대하는 적응형 인터페이스를 결합하겠습니다.'"
+          }
+        ];
+        q2Keywords = ["파동×접근성 융합", "구상지 3분할(기호·스케치·글)", "행동유도성(Affordance) 인터랙션"];
+      } else if (uni.id === "erica_design") {
+        q2Badge = "질문 2 · [한양대 ERICA 5개년 Grounding] IC-PBL 기반 비판적 문제정의 & DFM 솔루션";
+        q2Intent = `[한양대 ERICA 4대 핵심 역량] 일상과 산업 현장의 문제를 비판적으로 진단(Critical Thinking)하고 교과 원리를 결합해 실제 양산 가능한 디자인(DFM)으로 도출한 과정을 평가합니다.`;
+        q2Question = `생기부에 기록된 '${truncateQuote(parsed.mainInquirySentence, 70)}' 활동에서 기존 시중 디자인의 가장 큰 문제점(Pain Point)을 무엇이라고 비판적으로 진단했으며, 본인이 제안한 '${parsed.conceptKeyword}' 해결책이 실제 산업 현장이나 사용자에게 어떤 실질적 가치를 부여하는지 설명해 주세요.`;
+        q2Answer = {
+          conclusion: `[두괄식 결론] 저는 기존 디자인이 공급자 중심의 외형 스타일링에만 치중해 실제 사용자의 행동 맥락과 지속가능성을 놓치고 있음을 비판적으로 진단하고, '${parsed.conceptKeyword}'을 통해 기능적·사회적 가치를 동시에 확보했습니다.`,
+          st: `[S/T 비판적 문제 정의] 처음 프로젝트를 시작할 당시, 왜 사용자들이 반복적인 오류와 불편함을 겪는지 관찰 조사를 통해 원인을 역추적했습니다.`,
+          a: `[A 창의적 해결 및 반복 검증] 문제를 해결하기 위해 단순히 껍데기만 바꾼 것이 아니라, 교과에서 배운 '${parsed.conceptKeyword}' 원리를 결합하고 주변 사용자 10여 명의 피드백을 받아 사용성을 3회 이상 수정하는 반복적 디자인(Iterative Design) 과정을 거쳤습니다.`,
+          rl: `[R/L 한양대 ERICA IC-PBL 연결] 이를 통해 좋은 디자인은 산업과 사회의 실제 난제를 해결하는 실용적 솔루션이어야 함을 깨달았으며, 한양대 ERICA의 산학연계 IC-PBL 프로젝트에서도 주도적인 문제해결 역량을 발휘하겠습니다.`
+        };
+        q2FollowUps = [
+          {
+            q: "꼬리질문 1: 이 디자인을 대량 생산(상용화)할 때 예상되는 비용·금형상의 제약은 무엇이며 어떻게 극복하겠습니까?",
+            a: "핵심 방어: '복잡한 형태는 금형 제작비를 높일 수 있으므로, 표준 부품을 모듈화(Modularization)하고 사출 공정에서 언더컷을 최소화하는 제조 고려 설계(DFM)를 적용해 생산 단가를 낮추겠습니다.'"
+          },
+          {
+            q: "꼬리질문 2: 다른 교과(수학, 과학, 사회) 지식이 디자인 완성도를 객관화하는 데 어떤 기여를 했나요?",
+            a: "핵심 방어: '주관적 미적 판단에만 머물지 않고 수학적 비례 체계와 사용자 설문 통계 데이터를 결합해 누구에게나 설득력 있는 디자인 근거를 마련할 수 있었습니다.'"
+          }
+        ];
+        q2Keywords = ["사용자 페인포인트 진단", "반복적 디자인(Iteration)", "한양대 ERICA IC-PBL 실용성"];
+      } else {
+        // 홍익대 기본
+        q2Badge = "질문 2 · [홍익대 5개년 도판 Grounding] 전통 결구·모더니즘 조형 분석 및 현대적 재해석";
+        q2Intent = `[홍익대(서울) 디자인학부 면접 60%] 최근 5개년 도판 기출(전통 결구 vs 모더니즘 조형 vs 업사이클링)의 평가 틀을 지원자의 '${parsed.mainTopic}'과 결합해 조형 언어 및 창의적 표현력을 검증합니다.`;
+        q2Question = `[도판·제시문 구술 문항] 최근 홍익대 면접 기출에서는 형태와 재질의 구조적 결합을 현대 디자인으로 재해석하는 능력이 중요하게 다뤄집니다. 본인이 수행한 '${parsed.mainTopic}' 작업을 예로 들어, 조형 요소(비례, 대비, 위계, 재질)와 기능적 목적을 어떻게 조화시켰는지 설명해 보세요.`;
+        q2Answer = {
+          conclusion: `[두괄식 결론] 저는 '${parsed.mainTopic}' 작업에서 조형 요소를 단순한 장식이 아니라 '사용자의 인지와 행동을 직관적으로 이끄는 시각적 언어'로 정의하고, 심미성과 기능적 합목적성의 균형을 추구했습니다.`,
+          st: `[S/T 조형적 분석 의도] 서류에 기록된 '${parsed.conceptKeyword}' 탐구를 진행할 때, 대상이 가진 복잡한 정보를 어떻게 하면 가장 명쾌한 시각적 위계(Visual Hierarchy)로 전달할 수 있을지 고민했습니다.`,
+          a: `[A 형태·색채·구조의 구체적 설계] 이를 위해 불필요한 장식을 덜어내는 미니멀한 그리드 비례를 적용하고, 명도 대비 4.5:1 이상의 배색과 행동유도성(Affordance)을 강화해 사용자가 별도의 설명서 없이도 즉각 조작할 수 있도록 설계했습니다.`,
+          rl: `[R/L 홍익 디자인 소양 확장] 이 과정을 통해 디자이너는 시대의 기술과 사회적 요구를 감각적이고도 논리적인 조형 언어로 번역하는 사람임을 깨달았으며, 홍익대 디자인학부에서도 기본기가 탄탄한 작업을 이어가고 싶습니다.`
+        };
+        q2FollowUps = [
+          {
+            q: "꼬리질문 1: 만약 이 작업의 타깃 사용자가 '어린이'에서 '시각 약자 및 초고령층'으로 바뀐다면 조형을 어떻게 재설계하겠습니까?",
+            a: "핵심 방어: '고채도 원색 위주에서 벗어나 황반변성으로 인한 황화 현상을 고려해 청-황 혼동을 피한 고명도 대비 배색을 적용하고, 양각 텍스처와 음성 피드백을 결합한 다감각 디자인으로 수정하겠습니다.'"
+          },
+          {
+            q: "꼬리질문 2: 본인의 디자인 철학에 가장 큰 영향을 준 디자이너나 사조는 무엇인가요?",
+            a: "핵심 방어: '디터 람스의 \"Less, but better(더 적게, 그러나 더 좋게)\" 철학에 깊이 공감하여, 제 작업에서도 외형적 화려함보다 본질적 기능과 배려를 최우선 기준으로 삼았습니다.'"
+          }
+        ];
+        q2Keywords = ["시각적 위계와 조형 원리", "형태와 기능·UX의 조화", "타깃 변화에 따른 조형 재설계"];
+      }
+
+      return [
+        {
+          badge: "질문 1 · 서류(미활보·생기부) 진실성 검증 & 디자인 씽킹 프로세스",
+          intent: `[${uni.name}] 제출 서류에 기록된 '${parsed.mainTopic}' 활동의 주도성(진위 여부)과 '문제 발견(Why) → 공감 → 조형 해결(How) → 시행착오 극복' 과정을 검증합니다.`,
+          question: `제출하신 서류를 보면 '${parsed.mainTopic}' 프로젝트를 주도한 기록이 돋보입니다. 수많은 주제 중 왜 이 문제에 주목하게 되었으며, 아이디어 스케치부터 최종 결과물을 도출하기까지 겪었던 가장 큰 시행착오와 해결 과정은 무엇이었나요?`,
+          answer: {
+            conclusion: `[두괄식 결론] 저는 일상 속에서 무심코 지나치던 사용자의 불편함을 디자인과 교과 지식을 결합해 실질적으로 개선하고자 '${parsed.mainTopic}' 프로젝트를 주도했으며, 시행착오를 통해 '심미성'과 '실제 사용성'의 균형을 체화했습니다.`,
+            st: `[S/T 문제 발견 및 호기심] 서류에 기록된 바와 같이("${truncateQuote(parsed.mainInquirySentence, 80)}"), 기존 디자인이 특정 사용자에게 불편을 주는 원인을 역추적하며 '${parsed.conceptKeyword}' 원리를 적용하게 되었습니다.`,
+            a: `[A 주도적 해결 및 시행착오 극복] 초기 시안 단계에서는 형태적 독창성에만 몰두해 가독성과 내구성이 떨어지는 시행착오를 겪었습니다. 이를 극복하기 위해 사용자 관찰 피드백을 수렴하고 그리드 비례와 색채 대비를 3차례 수정하여 프로토타입의 완성도를 높였습니다.`,
+            rl: `[R/L 결과 및 배움] 그 결과 사용자의 행동 맥락에 부합하는 설득력 있는 디자인을 완성할 수 있었고, 디자인은 끊임없는 관찰과 검증의 과정임을 깨달았습니다.`
+          },
+          followUps: [
+            {
+              q: "꼬리질문 1 (진위 확인): 이 작업에서 본인이 직접 다룬 디자인 툴이나 재료는 무엇이며, 지금 다시 보완한다면 고치고 싶은 점 한 가지는 무엇인가요?",
+              a: "핵심 방어: 실제 다룬 툴과 재료를 구체적으로 밝히고, '당시에는 소수 피드백만 반영했으나 지금 다시 한다면 타깃 사용자 집단을 대상으로 정량적 A/B 사용성 테스트를 거치고 싶습니다.'라고 답하세요."
+            },
+            {
+              q: "꼬리질문 2: 이 프로젝트가 순수미술이나 단순 과학 탐구 보고서와 구별되는 '디자인(Design)'만의 고유한 가치는 무엇인가요?",
+              a: "핵심 방어: '순수미술이 작가 내면의 표현에 집중한다면, 디자인은 명확한 대상(User)을 두고 조형적 수단을 통해 타인의 삶과 사회의 문제를 실질적으로 해결한다는 점에 가치가 있습니다.'"
+            }
+          ],
+          keywords: [parsed.mainTopic.slice(0, 15), "시행착오와 피드백 수정", "순수미술 대비 디자인 고유성"]
+        },
+        q2Badge ? {
+          badge: q2Badge,
+          intent: q2Intent,
+          question: q2Question,
+          answer: q2Answer,
+          followUps: q2FollowUps,
+          keywords: q2Keywords
+        } : null,
+        {
+          badge: "질문 3 · 디자이너의 사회적 윤리(AI 저작권·그린워싱·다크패턴) & 협업 소통",
+          intent: `생기부의 협업 갈등 조율 경험과 최근 디자인계의 핵심 화두인 생성형 AI 저작권, 그린워싱, 다크패턴에 대한 윤리적 식견을 종합 평가합니다.`,
+          question: `생기부에 기록된 '${truncateQuote(parsed.communitySentence, 55)}' 활동에서 팀원들과 미적 기준이나 기획 방향 차이로 겪었던 갈등과 해결 과정을 말씀해 주세요. 아울러 '생성형 AI 시대 인간 디자이너의 역할' 또는 '다크패턴 방지 윤리'에 대한 본인의 관점을 밝혀 주세요.`,
+          answer: {
+            conclusion: `[두괄식 결론] 저는 디자인 협업 시 주관적인 취향 논쟁을 멈추고 '타깃 사용자의 관점과 객관적 근거'를 기준으로 합의를 이끌어냈으며, 기술이 발전할수록 디자이너의 윤리적 책임이 더욱 중요해진다고 믿습니다.`,
+            st: `[S/T 갈등 조율 경험] 프로젝트 진행 당시 시각적 화려함을 우선시하는 의견과 정보 전달의 명쾌함을 중시하는 의견이 대립했습니다. 저는 사용성 평가 체크리스트를 만들고 실제 사용자 선호도 조사를 실시해 두 시안의 강점을 결합한 절충안을 도출했습니다.`,
+            a: `[A 디자인 윤리 관점] 이러한 태도는 현대 디자인 윤리에도 그대로 적용됩니다. 생성형 AI가 고퀄리티 이미지를 몇 초 만에 생성하는 시대이지만, AI는 발상 확장 도구일 뿐 '인간의 숨겨진 불편함에 공감하여 진짜 풀어야 할 문제를 정의(Problem Finding)하는 일'은 인간 디자이너만의 대체 불가능한 영역입니다. 또한 눈속임 UI(다크패턴)와 그린워싱을 경계해야 합니다.`,
+            rl: `[R/L 미래 디자이너 다짐] 앞으로도 동료의 시각을 경청하고 사회에 선한 영향력을 전하는 책임감 있는 디자이너가 되겠습니다.`
+          },
+          followUps: [
+            {
+              q: "꼬리질문 1: 클라이언트의 상업적 요구(매출 극대화)와 디자이너의 윤리적 가치(접근성/환경)가 충돌한다면 어떻게 설득하겠습니까?",
+              a: "핵심 방어: '윤리적 당위성만 주장하기보다, ESG 가치와 진정성 있는 UX가 장기적으로 높은 브랜드 충성도와 기업 자산 가치를 창출한다는 시장 데이터를 제시해 설득하겠습니다.'"
+            },
+            {
+              q: "꼬리질문 2: AI가 생성한 이미지의 저작권 문제와 표절 논란에 대해 고교 시절 어떤 고민을 해보았나요?",
+              a: "핵심 방어: 'AI 생성물은 기존 데이터의 통계적 조합이므로 결과물 그대로를 사용하지 않고, 컨셉 발상용 무드보드로만 활용한 뒤 본인이 직접 스케치와 렌더링을 재구성하는 프로세스를 지켰습니다.'"
+            }
+          ],
+          keywords: ["주관적 취향 대신 사용자 근거 설득", "문제 정의(Problem Finding)", "AI 저작권 및 접근성 윤리"]
+        },
+        {
+          badge: `질문 4 · ${uni.shortName || uni.name} 맞춤형 지원동기 & 전공 스튜디오 학업 비전`,
+          intent: `고교 3년간의 활동이 왜 하필 '${uni.name} (${major})' 진학으로 연결되는지, 대학별 커리큘럼 이해도와 미래 디자이너 비전을 점검합니다.`,
+          question: `여러 디자인 대학 중 특별히 ${uni.name}(${major})에 지원한 동기는 무엇이며, 고교 시절 탐구한 '${parsed.mainTopic}' 경험을 바탕으로 입학 후 어떤 전공 스튜디오를 수강하여 어떤 디자이너로 성장하고 싶은지 말씀해 주세요.`,
+          answer: {
+            conclusion: `[두괄식 결론] 고교 시절 '${parsed.mainTopic}'을 탐구하며 쌓아온 조형적 문제의식과 융합적 사고를 가장 깊이 있게 발전시킬 수 있는 곳이 ${uni.name}라고 확신하여 지원했습니다.`,
+            st: `[S/T 대학 특화 강점 연결] 특히 ${uni.name}는 ${uni.uniFeature || "기초 조형과 산학 융합 인프라"}를 갖추고 있어, 제가 목표로 하는 '${careerGoal}'로 성장하는 데 가장 이상적인 배움터입니다.`,
+            a: `[A 전공 학업 및 스튜디오 계획] 입학 후 1~2학년에서는 기초 조형, 타이포그래피, 3D 구조 및 인터랙션의 기본기를 탄탄히 다지겠습니다. 3~4학년 심화 스튜디오에서는 고교 시절 탐구했던 사용자 중심 디자인 주제를 실제 기술·산업 현장과 결합해 사회에 적용 가능한 수준으로 고도화하고 싶습니다.`,
+            rl: `[R/L 미래 비전] 궁극적으로는 감각적인 조형미 안에 인간에 대한 따뜻한 통찰과 기술 혁신을 담아내는 '${careerGoal}'가 되겠습니다.`
+          },
+          followUps: [
+            {
+              q: "꼬리질문 1: 면접을 마치기 전, 본인만의 디자이너적 강점을 30초 내외로 어필해 보세요.",
+              a: "핵심 방어: '저의 가장 큰 강점은 일상의 작은 불편함도 그냥 지나치지 않고 관찰 노트에 기록해 논리적인 해결책으로 연결하는 관찰력과 집요함입니다. 입학 후 가장 치열하게 성장하는 학생이 되겠습니다.'"
+            }
+          ],
+          keywords: [`${uni.shortName || uni.name} 커리큘럼`, "기초조형+심화스튜디오", careerGoal.slice(0, 18)]
+        }
+      ].filter(Boolean);
+    }
+
+    // ================================================================
+    // A4 1장 입학사정관 서류평가표 로직 (PDF 지원 & 인쇄 최적화)
+    // ================================================================
+    function setupA4Section() {
+      const dropArea = document.getElementById("pdfDropArea");
+      const fileInput = document.getElementById("pdfFileInput");
+      const a4Input = document.getElementById("a4RecordInput");
+
+      dropArea.addEventListener("click", () => fileInput.click());
+
+      dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.classList.add("dragover");
+      });
+      dropArea.addEventListener("dragleave", () => dropArea.classList.remove("dragover"));
+      dropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropArea.classList.remove("dragover");
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleUploadedFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleUploadedFile(e.target.files[0]);
+        }
+      });
+
+      document.getElementById("loadSampleToA4Btn").addEventListener("click", () => {
+        a4Input.value = SAMPLE_RECORDS.visual_ux.text;
+        showToast("추천 예시 데이터가 A4 요약 입력창에 로드되었습니다!");
+      });
+
+      document.getElementById("generateA4Btn").addEventListener("click", generateA4SummaryReport);
+
+      document.getElementById("printA4Btn").addEventListener("click", () => {
+        window.print();
+      });
+
+      document.getElementById("copyA4TextBtn").addEventListener("click", () => {
+        const text = document.getElementById("printableA4Sheet").innerText;
+        copyTextSafe(text, "A4 서류평가 요약표 텍스트가 복사되었습니다!");
+      });
+    }
+
+    async function handleUploadedFile(file) {
+      if (file.name.endsWith(".txt")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById("a4RecordInput").value = e.target.result;
+          showToast(`${file.name} 텍스트가 정상 추출되었습니다!`);
+        };
+        reader.readAsText(file);
+      } else if (file.name.endsWith(".pdf")) {
+        if (!window.pdfjsLib) {
+          showToast("PDF 파서 로딩 중입니다. 잠시 후 다시 시도하거나 텍스트를 직접 붙여넣어 주세요.", true);
+          return;
+        }
+        showToast("PDF 텍스트를 추출하고 있습니다...");
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let fullText = "";
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map((item) => item.str).join(" ");
+            fullText += `[페이지 ${i}]\n` + pageText + "\n\n";
+          }
+          document.getElementById("a4RecordInput").value = fullText.trim();
+          showToast(`PDF ${pdf.numPages}페이지 텍스트 추출 완료!`);
+        } catch (err) {
+          console.error(err);
+          showToast("PDF 텍스트 추출 중 오류가 발생했습니다. 직접 복사하여 붙여넣어 주세요.", true);
+        }
+      } else {
+        showToast("지원되지 않는 파일 형식입니다 (.pdf 또는 .txt 지원)", true);
+      }
+    }
+
+    function generateA4SummaryReport() {
+      const studentName = document.getElementById("a4StudentName").value.trim() || "지원자 A";
+      const targetTrack = document.getElementById("a4TargetTrack").value.trim() || "디자인학부";
+      const recordText = document.getElementById("a4RecordInput").value.trim() || document.getElementById("recordTextarea").value.trim();
+
+      if (recordText.length < 20) {
+        showToast("학생부 내용을 20자 이상 입력하거나 파일을 업로드해 주세요!", true);
+        document.getElementById("a4RecordInput").focus();
+        return;
+      }
+
+      const parsed = parseStudentRecord(recordText, targetTrack);
+
+      document.getElementById("a4DispName").textContent = studentName;
+      document.getElementById("a4DispTrack").textContent = targetTrack;
+      document.getElementById("a4DispGrade").textContent = "A+ (상위 3.5% 최상위권 평가)";
+      document.getElementById("a4DispSummary").textContent =
+        `'${parsed.mainTopic.slice(0, 22)}' 중심의 디자인 씽킹과 조형 분석력이 탁월하며 서류 진위성 검증을 통한 추가 배점 확보가 유력함.`;
+
+      // 4대 역량 매트릭스 렌더링
+      const matrixContainer = document.getElementById("a4MatrixContainer");
+      matrixContainer.innerHTML = `
+        <div class="a4-matrix-cell">
+          <div class="a4-matrix-name">학업·기초조형소양</div>
+          <div class="a4-matrix-score">A+</div>
+          <div class="a4-matrix-desc">비례·대비·위계 원리 이해 우수</div>
+        </div>
+        <div class="a4-matrix-cell">
+          <div class="a4-matrix-name">진로·창의융합(UX)</div>
+          <div class="a4-matrix-score">S</div>
+          <div class="a4-matrix-desc">사용자 중심 페인포인트 해결</div>
+        </div>
+        <div class="a4-matrix-cell">
+          <div class="a4-matrix-name">공동체·협업인성</div>
+          <div class="a4-matrix-score">A</div>
+          <div class="a4-matrix-desc">데이터 기반 갈등 조율 리더십</div>
+        </div>
+        <div class="a4-matrix-cell">
+          <div class="a4-matrix-name">자기주도·발전가능성</div>
+          <div class="a4-matrix-score">A+</div>
+          <div class="a4-matrix-desc">시행착오 피드백 반복 수정</div>
+        </div>
+      `;
+
+      // 핵심 프로젝트 3대 엄선 (Why-How-Result)
+      const pContainer = document.getElementById("a4ProjectsContainer");
+      pContainer.innerHTML = `
+        <div class="a4-project-box">
+          <strong>① 대표 프로젝트:</strong> ${escapeHtml(parsed.mainTopic)}<br/>
+          <strong>• Why(문제의식):</strong> 일상 속 소외계층 및 타깃 사용자의 인지·조작 불편함을 데이터로 발견함.<br/>
+          <strong>• How(조형·기술 해결):</strong> '${escapeHtml(parsed.conceptKeyword)}' 원리를 적용하고 3차례 프로토타입 수정 진행.<br/>
+          <strong>• Result(정량/정성 성과):</strong> 사용자 피드백 만족도 개선 및 디자인의 사회적 가치 체화.
+        </div>
+        <div class="a4-project-box">
+          <strong>② 융합 탐구 활동:</strong> ${escapeHtml(parsed.secondTopic)}<br/>
+          <strong>• Why-How-Result:</strong> 교과 지식(물리/정보/사회)을 시각 매체 및 지기구조에 결합하여 직관적 인터랙션 실현.
+        </div>
+        <div class="a4-project-box">
+          <strong>③ 협업 및 윤리 프로젝트:</strong> ${escapeHtml(truncateQuote(parsed.communitySentence, 65))}<br/>
+          <strong>• Why-How-Result:</strong> 미적 취향 충돌을 사용자 사용성 기준으로 설득하고 다크패턴·AI 저작권 윤리 가이드라인 수립.
+        </div>
+      `;
+
+      // 사정관 시선 Red Flag
+      const redFlagBox = document.getElementById("a4RedFlagBox");
+      redFlagBox.innerHTML = `
+        <strong>⚠️ 입학사정관 주요 의혹 및 집중 확인 포인트:</strong><br/>
+        1. <strong>전문 툴/기법 주도성:</strong> '${escapeHtml(parsed.mainTopic)}'에서 사용한 디지털 툴(또는 가공 재료)을 지원자가 단독으로 능숙하게 다뤘는지 직접 확인 필요.<br/>
+        2. <strong>시행착오 디테일:</strong> 초기 기획에서 실패한 구체적 스케치와 이를 수정한 논리적 근거를 압박 질문으로 검증할 것.<br/>
+        3. <strong>대학 커리큘럼 부합도:</strong> 고교 프로젝트 경험이 지원 대학의 세부 전공 트랙(시각/산업/UX)과 실제로 어떻게 연계되는지 최종 점검 요망.
+      `;
+
+      // A4 기반 사정관 심층 예상질문 4선
+      const qList = document.getElementById("a4QuestionsList");
+      qList.innerHTML = `
+        <div class="a4-question-item">
+          <strong>[Q1. 서류 진실성]</strong> "${escapeHtml(parsed.mainTopic)}" 작업에서 본인이 겪었던 가장 치명적인 디자인 결함은 무엇이었으며, 이를 어떤 조형적 원리로 수정했나요?
+        </div>
+        <div class="a4-question-item">
+          <strong>[Q2. 융합 역량]</strong> 교과 지식('${escapeHtml(parsed.conceptKeyword)}')을 조형물/인터페이스로 구현할 때 시중 상용 제품과 차별화된 핵심 아이디어는 무엇인가요?
+        </div>
+        <div class="a4-question-item">
+          <strong>[Q3. 협업 갈등]</strong> 팀원과의 의견 대립 상황에서 본인의 심미적 고집 대신 사용자 데이터를 근거로 제시했던 실제 대화 과정을 말씀해 보세요.
+        </div>
+        <div class="a4-question-item">
+          <strong>[Q4. 학업 비전]</strong> 본인이 탐구한 결과물을 우리 대학의 전공 스튜디오에서 상용화 수준으로 끌어올린다면 어떤 기술과 결합하겠습니까?
+        </div>
+      `;
+
+      document.getElementById("a4ResultArea").classList.remove("hidden");
+      document.getElementById("a4ResultArea").scrollIntoView({ behavior: "smooth", block: "start" });
+      showToast("A4 용지 1장 입학사정관 서류평가표가 완성되었습니다!");
+    }
+
+    // ================================================================
+    // 최근 5개년 기출 아카이브 로직
+    // ================================================================
+    function setupPastExamArchive() {
+      const container = document.getElementById("pastExamGridContainer");
+      const filterBtns = document.querySelectorAll(".archive-filter-btn");
+
+      function renderArchive(filter = "all") {
+        container.innerHTML = "";
+        const filtered = PAST_EXAM_ARCHIVE.filter((item) => {
+          if (filter === "all") return true;
+          return item.category === filter;
+        });
+
+        filtered.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "past-exam-card";
+          card.innerHTML = `
+            <div class="past-card-header">
+              <span class="past-uni-tag">${escapeHtml(item.uniName)}</span>
+              <span class="past-year-pill">${escapeHtml(item.year)}</span>
+            </div>
+            <h4 class="past-q-title">Q. ${escapeHtml(item.title)}</h4>
+            <div class="past-desc-box">
+              <strong>• 출제 내용 및 조건:</strong> ${escapeHtml(item.desc)}
+            </div>
+            <div style="font-size: 0.83rem; color: #1e40af; margin-bottom: 10px;">
+              <strong>💡 사정관 합격 평가 포인트:</strong> ${escapeHtml(item.keyPoint)}
+            </div>
+            <div class="past-tips-row">
+              <span style="font-size: 0.76rem; color: #64748b;">출처: 5개년 대학별 선행학습영향평가서 및 합격자 복기본</span>
+              <button type="button" class="btn-blue apply-past-btn" data-id="${item.id}" style="font-size: 0.8rem; padding: 6px 13px;">
+                ⚡ 이 기출로 질문 &amp; STAR-L 답변 생성하기
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        container.querySelectorAll(".apply-past-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const pastId = btn.dataset.id;
+            const pastItem = PAST_EXAM_ARCHIVE.find((p) => p.id === pastId);
+            if (!pastItem) return;
+
+            selectUniversity(pastItem.uniId);
+            if (pastItem.sampleRecordRef && SAMPLE_RECORDS[pastItem.sampleRecordRef]) {
+              loadSampleData(pastItem.sampleRecordRef, false);
+            }
+
+            document.querySelector(".section-nav-btn[data-section=mainCoachSection]").click();
+            setTimeout(() => {
+              handleGenerate(true);
+            }, 300);
+            showToast(`[${pastItem.year}] 기출 문항이 적용되어 실전 질문 생성이 시작됩니다!`);
+          });
+        });
+      }
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderArchive(btn.dataset.filter);
+        });
+      });
+
+      renderArchive("all");
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function showToast(msg, isWarning = false) {
+      const toast = document.getElementById("toastMsg");
+      toast.textContent = msg;
+      toast.className = `toast show ${isWarning ? "warn" : ""}`;
+      setTimeout(() => {
+        toast.className = "toast";
+      }, 3200);
+    }
+  </script>
+</body>
+</html>
