@@ -1507,6 +1507,122 @@
       to { transform: rotate(360deg); }
     }
 
+    /* 최상단 파일 다운로드 전용 배너 */
+    .download-hero-banner {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-bottom: 2px solid #93c5fd;
+      padding: 14px 20px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    }
+    .download-hero-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .download-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .download-badge-icon {
+      font-size: 2rem;
+      background: #ffffff;
+      border: 2px solid #3b82f6;
+      border-radius: 14px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
+      flex-shrink: 0;
+    }
+    .download-hero-title {
+      font-size: 1.05rem;
+      color: #1e3a8a;
+      line-height: 1.4;
+    }
+    .download-hero-desc {
+      font-size: 0.84rem;
+      color: #2563eb;
+      margin-top: 2px;
+    }
+    .download-big-pulse-btn {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      color: #ffffff;
+      border: 2px solid #60a5fa;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      animation: pulseBtnGlow 2.4s infinite;
+    }
+    .download-big-pulse-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(29, 78, 216, 0.45);
+      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    }
+    @keyframes pulseBtnGlow {
+      0%, 100% { box-shadow: 0 6px 18px rgba(29, 78, 216, 0.35); }
+      50% { box-shadow: 0 6px 26px rgba(37, 99, 235, 0.65); }
+    }
+
+    /* 우측 하단 플로팅 다운로드 FAB */
+    .floating-download-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99999;
+    }
+    .floating-download-btn {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      color: #ffffff;
+      border: 2px solid #93c5fd;
+      border-radius: 999px;
+      padding: 12px 20px 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 8px 26px rgba(29, 78, 216, 0.42);
+      transition: all 0.22s ease-in-out;
+      font-family: inherit;
+      text-align: left;
+    }
+    .floating-download-btn:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 12px 32px rgba(29, 78, 216, 0.55);
+      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    }
+    .fab-icon {
+      font-size: 1.5rem;
+      background: #ffffff;
+      color: #1d4ed8;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    .fab-label {
+      line-height: 1.25;
+      color: #ffffff;
+    }
+
     /* A4 용지 1장 인쇄 전용 CSS (@media print) */
     @media print {
       @page {
@@ -1519,6 +1635,8 @@
         padding: 0 !important;
       }
       .app-header,
+      .download-hero-banner,
+      .floating-download-container,
       .section-nav-wrap,
       .live-ticker-bar,
       #mainCoachSection,
@@ -1593,6 +1711,28 @@
     </div>
   </header>
 
+  <!-- 눈에 띄는 최상단 파일 다운로드 전용 배너 -->
+  <aside class="download-hero-banner" role="region" aria-label="파일 다운로드 바로가기">
+    <div class="download-hero-inner">
+      <div class="download-hero-left">
+        <span class="download-badge-icon">📥</span>
+        <div>
+          <div class="download-hero-title">
+            <strong>[원클릭 다운로드] 인터넷 브라우저에서 바로 열리는 단독 실행 HTML 파일</strong>
+          </div>
+          <div class="download-hero-desc">
+            서버나 별도 설치 없이, 다운로드 후 파일을 더블클릭하면 Chrome, Edge, Safari, Whale 등 모든 브라우저에서 즉시 작동합니다.
+          </div>
+        </div>
+      </div>
+      <div class="download-hero-right">
+        <button type="button" id="downloadBannerBtn" class="download-big-pulse-btn">
+          📥 지금 HTML 파일 다운로드 (.html)
+        </button>
+      </div>
+    </div>
+  </aside>
+
   <!-- 상단 대형 섹션 전환 파란색 버튼 바 (파란색 섹션 버튼) -->
   <nav class="section-nav-wrap">
     <div class="section-nav-grid">
@@ -1611,6 +1751,10 @@
       <button type="button" class="section-nav-btn" data-section="groundingSection">
         <span>🌐</span>
         <span>5개년 인터넷 Grounding 인사이트</span>
+      </button>
+      <button type="button" class="section-nav-btn section-nav-download-btn" id="downloadNavBtn" style="background: linear-gradient(135deg, #047857 0%, #059669 100%); border-color: #a7f3d0; color: #ffffff;">
+        <span>📥</span>
+        <span>HTML 파일 다운로드</span>
       </button>
     </div>
   </nav>
@@ -2117,6 +2261,14 @@
     </div>
   </div>
 
+  <!-- 화면 우측 하단 상시 고정 플로팅 다운로드 버튼 -->
+  <aside class="floating-download-container" aria-label="화면 고정 다운로드 버튼">
+    <button type="button" id="downloadFabBtn" class="floating-download-btn" title="내 컴퓨터에서 바로 열리는 HTML 파일 다운로드">
+      <span class="fab-icon">📥</span>
+      <span class="fab-label"><strong>HTML 파일 다운로드</strong><br/><small style="font-size: 0.72rem; opacity: 0.9;">PC 브라우저 바로실행</small></span>
+    </button>
+  </aside>
+
   <div id="toastMsg" class="toast"></div>
 
   <script>
@@ -2399,10 +2551,12 @@
 
       navButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
+          const targetId = btn.dataset.section;
+          if (!targetId) return;
+
           navButtons.forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
 
-          const targetId = btn.dataset.section;
           views.forEach((v) => {
             if (v.id === targetId) {
               v.classList.remove("hidden");
@@ -2585,14 +2739,20 @@
 
       document.getElementById("downloadTxtBtn").addEventListener("click", downloadResultAsText);
 
-      const dlAppBtn = document.getElementById("downloadAppHtmlBtn");
-      if (dlAppBtn) {
-        dlAppBtn.addEventListener("click", downloadCompleteAppFile);
-      }
-      const dlAppResBtn = document.getElementById("downloadAppHtmlResultBtn");
-      if (dlAppResBtn) {
-        dlAppResBtn.addEventListener("click", downloadCompleteAppFile);
-      }
+      // 모든 파일 다운로드 트리거 연결 (헤더, 최상단배너, 섹션네비게이션, 결과창, 우측하단고정 FAB)
+      const downloadTriggerIds = [
+        "downloadAppHtmlBtn",
+        "downloadBannerBtn",
+        "downloadNavBtn",
+        "downloadFabBtn",
+        "downloadAppHtmlResultBtn"
+      ];
+      downloadTriggerIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener("click", downloadCompleteAppFile);
+        }
+      });
 
       const apiToggleBtn = document.getElementById("toggleApiDrawerBtn");
       const apiDrawer = document.getElementById("apiDrawer");
